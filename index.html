@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-54NHP7XK');</script>
+  <!-- End Google Tag Manager -->
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CSL FINDS</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     /* Variables de design - Style Notion / Airtable (Dark par défaut) */
@@ -26,6 +32,10 @@
       /* Couleur pour le tag vendeur bleu */
       --bg-seller: rgba(37, 99, 235, 0.2);
       --text-seller: #60a5fa;
+
+      /* Couleur pour le tag prix */
+      --bg-price: rgba(16, 185, 129, 0.15);
+      --text-price: #34d399;
     }
 
     /* Thème Clair - Style Notion Pur */
@@ -43,6 +53,9 @@
       
       --bg-seller: #dbeafe;
       --text-seller: #1e40af;
+
+      --bg-price: #d1fae5;
+      --text-price: #065f46;
     }
 
     * {
@@ -71,7 +84,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 20px;
-      padding: 12px 24px;
+      padding: 20px 24px;
     }
 
     body.light .topbar {
@@ -90,6 +103,47 @@
       margin-top: 2px;
     }
 
+    /* Conteneur Titre + Liens Réseaux */
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .social-btn {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 48px;  
+      height: 48px; 
+      border-radius: 8px; 
+      transition: all 0.2s ease;
+      border: 2px solid var(--accent); 
+      background: var(--input-bg);
+      overflow: hidden; 
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); 
+    }
+
+    .social-btn:hover {
+      transform: translateY(-3px) scale(1.05); 
+      border-color: var(--text); 
+    }
+
+    .social-btn img {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     /* Zone des Actions (Filtres, Recherche, Thème) */
     .actions {
       display: flex;
@@ -99,6 +153,10 @@
 
     .search-wrapper {
       position: relative;
+    }
+
+    .mobile-search-bar {
+      display: none; 
     }
 
     input, select, button {
@@ -160,14 +218,14 @@
       background: var(--border);
     }
 
-    /* Grille de produits beaucoup plus compacte (Mini-Cartes) */
+    /* Grille de produits */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 12px;
     }
 
-    /* Carte Produit - Cliquable et épurée */
+    /* Carte Produit */
     .product-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -189,7 +247,7 @@
       box-shadow: 0 6px 12px rgba(0,0,0,0.05);
     }
 
-    /* Galerie photos compacte */
+    /* Galerie photos */
     .product-images {
       display: flex;
       overflow-x: auto;
@@ -197,6 +255,8 @@
       scrollbar-width: none;
       background: rgba(0,0,0,0.02);
       border-bottom: 1px solid var(--border);
+      width: 100%;
+      aspect-ratio: 1 / 1;
     }
 
     .product-images::-webkit-scrollbar {
@@ -206,12 +266,12 @@
     .product-images img {
       width: 100%;
       min-width: 100%;
-      height: 140px;
+      height: 100%;
       object-fit: cover;
       scroll-snap-align: start;
     }
 
-    /* Contenu condensé de la carte */
+    /* Contenu de la carte */
     .product-content {
       padding: 10px;
       display: flex;
@@ -229,14 +289,12 @@
       text-overflow: ellipsis;
     }
 
-    /* Groupement des tags côte à côte */
     .product-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
     }
 
-    /* Tag de catégorie */
     .product-category {
       padding: 2px 6px;
       border-radius: 4px;
@@ -246,7 +304,6 @@
       font-weight: 600;
     }
 
-    /* Tag de vendeur (Bleu) */
     .product-seller {
       padding: 2px 6px;
       border-radius: 4px;
@@ -256,7 +313,16 @@
       font-weight: 600;
     }
 
-    /* Design des Overlays / Popups */
+    .product-price {
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--bg-price);
+      color: var(--text-price);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    /* Popups */
     .popup-overlay {
       position: fixed;
       inset: 0;
@@ -299,10 +365,10 @@
       margin-bottom: 18px;
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 6px;
     }
 
-    /* Container de liens de la popup produit */
     .popup-links-container {
       display: flex;
       flex-direction: column;
@@ -362,38 +428,77 @@
       to { opacity: 1; }
     }
 
+    /* Modifications Responsive Mobile */
     @media (max-width: 768px) {
       .topbar {
+        position: absolute; 
+        top: 0;
+        left: 0;
+        width: 100%;
         flex-direction: column;
-        align-items: stretch;
-        padding: 12px;
-        gap: 12px;
+        align-items: center;
+        padding: 16px 12px;
+        gap: 16px;
       }
+      .brand-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+      }
+      .brand {
+        text-align: center;
+      }
+      .social-links {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .topbar .actions .search-wrapper {
+        display: none;
+      }
+      
       .actions {
         width: 100%;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        justify-content: center;
       }
-      .search-wrapper {
-        flex-grow: 1;
+      
+      .mobile-search-bar {
+        display: block;
+        position: sticky;
+        top: 0;
+        z-index: 9;
+        backdrop-filter: blur(12px);
+        background: rgba(25, 25, 25, 0.9);
+        border-bottom: 1px solid var(--border);
+        padding: 10px 12px;
         width: 100%;
       }
-      input, select {
-        width: 100%;
+      body.light .mobile-search-bar {
+        background: rgba(255, 255, 255, 0.9);
       }
+      .mobile-search-bar input {
+        width: 100%;
+        padding: 8px 12px;
+      }
+
       main {
-        padding: 16px 12px;
+        padding: 240px 12px 16px 12px; 
       }
       .products-grid {
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
         gap: 8px;
       }
-      .product-images img {
-        height: 110px;
-      }
     }
   </style>
 </head>
 <body>
+
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-54NHP7XK"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
 <div id="tiktokPopup" class="popup-overlay hidden">
   <div class="popup-card">
@@ -409,6 +514,7 @@
   <div class="popup-card">
     <h2 id="popupProductTitle">Nom du Produit</h2>
     <div id="popupProductInfo" class="popup-sub">
+      <span id="popupProductPrice" class="product-price">Prix</span>
       <span id="popupProductCategory">Catégorie</span>
       <span id="popupProductSeller"></span>
     </div>
@@ -423,9 +529,29 @@
 </div>
 
 <header class="topbar">
-  <div class="brand">
-    <h1>CSL FINDS</h1>
-    <p>Les meilleurs liens !</p>
+  <div class="brand-container">
+    <div class="brand">
+      <h1>CSL FINDS</h1>
+      <p>Les meilleurs liens !</p>
+    </div>
+    
+    <div class="social-links">
+      <a href="https://discord.gg/xN6eeesfD" target="_blank" class="social-btn discord" title="Rejoindre le Discord">
+        <img src="https://th.bing.com/th/id/OIP.EZkdm25nbQDs_PjFN8hmewHaHa?w=179&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Discord">
+      </a>
+
+      <a href="https://t.me/+c6FdBetY4TQ5Zjdk" target="_blank" class="social-btn telegram" title="Rejoindre le Telegram">
+        <img src="https://th.bing.com/th/id/OIP.RoaeSbQ4aLaB6ifctJ5eBAHaHa?w=179&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Telegram">
+      </a>
+
+      <a href="https://www.tiktok.com/@bbdbuyxyou?is_from_webapp=1&sender_device=pc" target="_blank" class="social-btn tiktok" title="Nous suivre sur TikTok">
+        <img src="https://th.bing.com/th/id/OIP.hG2pQRJiUa9gxkLFPQy6tQHaHa?w=170&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="TikTok">
+      </a>
+
+      <a href="https://www.bbdbuyeu.com/register?inviteCode=hQUDCD" target="_blank" class="social-btn bbd-nav" title="S'inscrire sur BbdBuy">
+        <img src="https://th.bing.com/th/id/OIP.-ykdS5LGPrH4ftZI26C9iAHaHa?w=166&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="BbdBuy">
+      </a>
+    </div>
   </div>
 
   <div class="actions">
@@ -437,15 +563,23 @@
       <option value="all">Tous les vendeurs</option>
     </select>
 
-    <select id="sortSelect">
-      <option value="default">Tri par défaut</option>
-      <option value="az">Nom : A → Z</option>
-      <option value="za">Nom : Z → A</option>
+    <select id="categorySelect">
+      <option value="all">Toutes les catégories</option>
+      <option value="PULL">PULL</option>
+      <option value="BAS">BAS</option>
+      <option value="CHAUSSURES">CHAUSSURES</option>
+      <option value="ACCESSOIRES">ACCESSOIRES</option>
+      <option value="T-SHIRT">T-SHIRT</option>
+      <option value="MANTEAU">MANTEAU</option>
     </select>
 
     <button id="themeToggle" title="Changer le thème">🌙</button>
   </div>
 </header>
+
+<div class="mobile-search-bar">
+  <input type="text" id="mobileSearchInput" placeholder="🔍 Rechercher un produit..." />
+</div>
 
 <main>
   <div id="categoryContainer"></div>
@@ -457,6 +591,7 @@
     <div class="product-content">
       <h3 class="product-title"></h3>
       <div class="product-tags">
+        <span class="product-price hidden"></span>
         <span class="product-category"></span>
         <span class="product-seller hidden"></span>
       </div>
@@ -465,36 +600,36 @@
 </template>
 
 <script>
+window.dataLayer = window.dataLayer || [];
 const categoryContainer = document.getElementById("categoryContainer");
 const template = document.getElementById("productTemplate");
 const searchInput = document.getElementById("searchInput");
+const mobileSearchInput = document.getElementById("mobileSearchInput"); 
 const sellerSelect = document.getElementById("sellerSelect");
-const sortSelect = document.getElementById("sortSelect");
+const categorySelect = document.getElementById("categorySelect"); 
 const themeToggle = document.getElementById("themeToggle");
 
-// Éléments de la popup produit
 const productPopup = document.getElementById("productPopup");
 const popupProductTitle = document.getElementById("popupProductTitle");
 const popupProductCategory = document.getElementById("popupProductCategory");
 const popupProductSeller = document.getElementById("popupProductSeller");
+const popupProductPrice = document.getElementById("popupProductPrice");
 const popupBbdLink = document.getElementById("popupBbdLink");
 const popupWeidianLink = document.getElementById("popupWeidianLink");
 const closeProductPopup = document.getElementById("closeProductPopup");
 
 let products = [];
+let searchTimeout;
 
-// -------- TikTok Detection --------
+// TikTok Detection
 (function detectTikTokBrowser() {
   const alreadySeen = localStorage.getItem("tiktokPopupSeen");
   if (alreadySeen) return;
-
   const ua = navigator.userAgent || navigator.vendor || window.opera;
   const isTikTok = ua.includes("TikTok") || ua.includes("musical_ly");
-
   if (isTikTok) {
     const popup = document.getElementById("tiktokPopup");
     popup.classList.remove("hidden");
-
     document.getElementById("closePopup").addEventListener("click", () => {
       popup.classList.add("hidden");
       localStorage.setItem("tiktokPopupSeen", "true");
@@ -502,7 +637,7 @@ let products = [];
   }
 })();
 
-// -------- Gestion du Thème --------
+// Gestion du Thème
 (function loadTheme() {
   const saved = localStorage.getItem("theme");
   if (saved === "light") {
@@ -520,11 +655,18 @@ themeToggle.addEventListener("click", () => {
   localStorage.setItem("theme", isLight ? "light" : "dark");
 });
 
-// -------- Gestion Ouverture de la Popup Produit --------
+// Envoi des événements via la dataLayer de Google Tag Manager
 function openLinksPopup(product) {
   popupProductTitle.textContent = product.name;
   popupProductCategory.textContent = `Catégorie : ${product.category}`;
   
+  if (product.price) {
+    popupProductPrice.textContent = product.price;
+    popupProductPrice.classList.remove("hidden");
+  } else {
+    popupProductPrice.classList.add("hidden");
+  }
+
   if (product.seller) {
     popupProductSeller.textContent = `• Vendeur : ${product.seller}`;
     popupProductSeller.classList.remove("hidden");
@@ -534,30 +676,55 @@ function openLinksPopup(product) {
   
   popupBbdLink.href = product.bbd;
   popupWeidianLink.href = product.weidian;
-  
+
+  popupBbdLink.onclick = null;
+  popupWeidianLink.onclick = null;
+
+  // Clic sur le bouton BBD
+  popupBbdLink.onclick = () => {
+    dataLayer.push({
+      'event': 'click_lien_bbd',
+      'product_name': product.name,
+      'product_category': product.category
+    });
+  };
+
+  // Clic sur le bouton Weidian
+  popupWeidianLink.onclick = () => {
+    dataLayer.push({
+      'event': 'click_lien_weidian',
+      'product_name': product.name,
+      'product_category': product.category
+    });
+  };
+
+  // Ouverture de la fiche produit
+  dataLayer.push({
+    'event': 'view_product',
+    'product_name': product.name,
+    'product_category': product.category
+  });
+
   productPopup.classList.remove("hidden");
 }
 
-// Événements de fermeture de la popup produit
 closeProductPopup.addEventListener("click", () => productPopup.classList.add("hidden"));
 productPopup.addEventListener("click", (e) => {
   if (e.target === productPopup) productPopup.classList.add("hidden");
 });
 
-// -------- Chargement et Parsing Automatique --------
+// Chargement des données
 async function loadData() {
   try {
     const categoriesText = await fetch("categorie.txt?t=" + Date.now()).then(res => res.text());
     const productsText = await fetch("Produit.txt?t=" + Date.now()).then(res => res.text());
     
-    // Chargement optionnel du fichier vendeur.txt
     let sellers = [];
     try {
       const sellersText = await fetch("vendeur.txt?t=" + Date.now()).then(res => res.text());
       const cleanSellersText = sellersText.replace(/[\r\n]/g, "").trim();
       sellers = cleanSellersText.split("#").map(s => s.trim()).filter(Boolean);
       
-      // Remplissage dynamique du menu de sélection des vendeurs
       sellers.forEach(seller => {
         const option = document.createElement("option");
         option.value = seller;
@@ -565,16 +732,13 @@ async function loadData() {
         sellerSelect.appendChild(option);
       });
     } catch(e) {
-      console.warn("Fichier vendeur.txt absent ou illisible. Mode sans filtre vendeur activé.");
+      console.warn("Fichier vendeur.txt absent ou illisible.");
     }
 
     const cleanCategoriesText = categoriesText.replace(/[\r\n]/g, "").trim();
     const cleanProductsText = productsText.replace(/[\r\n]/g, "").trim();
 
-    const categories = cleanCategoriesText
-      .split("#")
-      .map(cat => cat.trim())
-      .filter(Boolean);
+    const categories = cleanCategoriesText.split("#").map(cat => cat.trim()).filter(Boolean);
 
     parseProducts(cleanProductsText, categories, sellers);
     renderProducts(products);
@@ -589,7 +753,6 @@ function parseProducts(text, validCategories, validSellers) {
 
   blocks.forEach(block => {
     const infos = block.split("#").map(i => i.trim());
-    
     if (infos.length < 5) return;
 
     const category = infos[0];
@@ -597,25 +760,21 @@ function parseProducts(text, validCategories, validSellers) {
     const images = infos[2].split(",").map(img => img.trim()).filter(Boolean);
     const bbd = infos[3];
     const weidian = infos[4];
-    
-    // Le 6ème élément (vendeur) est optionnel
     let seller = infos[5] || "";
+    let price = infos[6] || ""; 
     
-    // Sécurité de filtrage : si un fichier vendeur existe et qu'il y a un vendeur, on vérifie la cohérence
     if (validSellers.length > 0 && seller && !validSellers.includes(seller)) {
-      seller = ""; // réinitialise s'il n'est pas déclaré dans vendeur.txt
+      seller = "";
     }
 
     if (!validCategories.includes(category)) return;
 
-    products.push({ category, name, images, bbd, weidian, seller });
+    products.push({ category, name, images, bbd, weidian, seller, price });
   });
 }
 
-// -------- Rendu graphique --------
 function renderProducts(data) {
   categoryContainer.innerHTML = "";
-  
   if (data.length === 0) {
     categoryContainer.innerHTML = "<p style='text-align:center; color:var(--muted); margin-top:40px;'>Aucun produit trouvé.</p>";
     return;
@@ -645,7 +804,12 @@ function renderProducts(data) {
       clone.querySelector(".product-title").textContent = product.name;
       clone.querySelector(".product-category").textContent = product.category;
 
-      // Gestion de l'affichage dynamique du tag vendeur en bleu
+      const priceTag = clone.querySelector(".product-price");
+      if (product.price) {
+        priceTag.textContent = product.price;
+        priceTag.classList.remove("hidden");
+      }
+
       const sellerTag = clone.querySelector(".product-seller");
       if (product.seller) {
         sellerTag.textContent = product.seller;
@@ -661,7 +825,6 @@ function renderProducts(data) {
       });
 
       cardElement.addEventListener("click", () => openLinksPopup(product));
-
       grid.appendChild(clone);
     });
 
@@ -671,34 +834,75 @@ function renderProducts(data) {
   });
 }
 
-// -------- Recherche, Tri & Filtrage par Vendeur --------
-function filterAndSort() {
+function filterAndSort(e) {
+  if (e && e.target === mobileSearchInput) {
+    searchInput.value = mobileSearchInput.value;
+  } else if (e && e.target === searchInput) {
+    mobileSearchInput.value = searchInput.value;
+  }
+
   const searchValue = searchInput.value.toLowerCase();
   const sellerValue = sellerSelect.value;
+  const categoryValue = categorySelect.value; 
+
+  clearTimeout(searchTimeout);
+  if (searchValue.trim().length > 2) {
+    searchTimeout = setTimeout(() => {
+      dataLayer.push({
+        'event': 'search_product',
+        'search_term': searchValue
+      });
+    }, 1000);
+  }
   
-  // 1. Filtrage combiné (Recherche textuelle + Menu vendeur)
   let filtered = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchValue);
     const matchesSeller = (sellerValue === "all") || (product.seller === sellerValue);
-    return matchesSearch && matchesSeller;
+    const matchesCategory = (categoryValue === "all") || (product.category.toUpperCase() === categoryValue.toUpperCase());
+    
+    return matchesSearch && matchesSeller && matchesCategory;
   });
-
-  // 2. Tri alphabétique
-  const sort = sortSelect.value;
-  if (sort === "az") {
-    filtered.sort((a, b) => a.name.localeCompare(b.name));
-  } else if (sort === "za") {
-    filtered.sort((a, b) => b.name.localeCompare(a.name));
-  }
 
   renderProducts(filtered);
 }
 
 searchInput.addEventListener("input", filterAndSort);
+mobileSearchInput.addEventListener("input", filterAndSort); 
 sellerSelect.addEventListener("change", filterAndSort);
-sortSelect.addEventListener("change", filterAndSort);
+categorySelect.addEventListener("change", filterAndSort); 
 
 loadData();
+
+// Popup Automatique BBDBUY
+(function initBbdPopup() {
+  if (!localStorage.getItem('hideBBD')) {
+    setTimeout(() => {
+      const popup = document.getElementById('popupBBD');
+      if (popup) popup.style.display = 'flex';
+    }, 1000);
+  }
+})();
+
+function closePopup() {
+  if (document.getElementById('noMore').checked) {
+    localStorage.setItem('hideBBD', 'true');
+  }
+  const popup = document.getElementById('popupBBD');
+  if (popup) popup.style.display = 'none';
+}
 </script>
+
+<div id="popupBBD" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
+  <div style="background: #121212; color: white; width: 85%; max-width: 320px; padding: 15px; border-radius: 14px; text-align: center; border: 1px solid #2eaadc; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.9);">
+    <button onclick="closePopup()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; color: #9ca3af; font-size: 22px; cursor: pointer; transition: 0.2s; z-index: 10000;">✕</button>
+    <h2 style="font-weight: 800; font-size: 16px; color: #2eaadc; margin-top: 5px; margin-bottom: 8px;">REJOINS BBDBUY !</h2>
+    <p style="font-size: 11px; color: #9ca3af; line-height: 1.4; margin-bottom: 15px;">Inscris-toi dès maintenant sur BbdBuy pour obtenir ton pack de coupons exclusifs.</p>
+    <a href="https://www.bbdbuyeu.com/register?inviteCode=hQUDCD" target="_blank" style="display: block; padding: 12px; border-radius: 8px; font-weight: 800; font-size: 13px; text-decoration: none; background: #2eaadc; color: #000; text-transform: uppercase; letter-spacing: 0.5px;">S'INSCRIRE ICI</a>
+    <label style="display:block; margin-top:15px; font-size:11px; color:#9ca3af; cursor:pointer;">
+      <input type="checkbox" id="noMore" style="margin-right: 6px;"> Ne plus afficher
+    </label>
+  </div>
+</div>
+
 </body>
 </html>
