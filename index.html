@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* Variables de design - Style Notion / Airtable (Sombre par défaut) */
+    /* Variables de design - Style Notion / Airtable (Dark par défaut) */
     :root {
       --bg: #191919;
       --card: #202020;
@@ -98,7 +98,7 @@
       border: 1px solid var(--border);
       background: var(--input-bg);
       color: var(--text);
-      border-radius: 6px; /* Coins plus stricts style Notion */
+      border-radius: 6px;
       padding: 8px 14px;
       font-size: 0.9rem;
       font-family: inherit;
@@ -185,13 +185,13 @@
       display: flex;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      scrollbar-width: none; /* Cache la barre sur Firefox */
+      scrollbar-width: none;
       background: rgba(0,0,0,0.02);
       border-bottom: 1px solid var(--border);
     }
 
     .product-images::-webkit-scrollbar {
-      display: none; /* Cache la barre sur Chrome/Safari */
+      display: none;
     }
 
     .product-images img {
@@ -230,11 +230,11 @@
       letter-spacing: 0.02em;
     }
 
-    /* Liens d'action style Spreadsheet boutonné */
+    /* Liens d'action */
     .product-links {
       display: flex;
       gap: 8px;
-      margin-top: auto; /* Aligne les boutons en bas */
+      margin-top: auto;
     }
 
     .product-links a {
@@ -267,7 +267,7 @@
       background: var(--input-bg);
     }
 
-    /* Popup TikTok Moderne */
+    /* Popup TikTok */
     .popup-overlay {
       position: fixed;
       inset: 0;
@@ -330,7 +330,6 @@
       to { opacity: 1; }
     }
 
-    /* Responsive Mobile */
     @media (max-width: 768px) {
       .topbar {
         flex-direction: column;
@@ -338,30 +337,24 @@
         padding: 16px;
         gap: 16px;
       }
-
       .actions {
         width: 100%;
       }
-
       .search-wrapper {
         flex-grow: 1;
       }
-
       input {
         width: 100%;
       }
-
       main {
         padding: 24px 16px;
       }
-
       .products-grid {
-        grid-template-columns: 1fr; /* Une seule colonne sur mobile pour un scroll propre */
+        grid-template-columns: 1fr;
         gap: 16px;
       }
-      
       .product-images img {
-        height: 280px; /* Plus grand format d'image sur mobile */
+        height: 280px;
       }
     }
   </style>
@@ -426,7 +419,7 @@ const themeToggle = document.getElementById("themeToggle");
 
 let products = [];
 
-// -------- TikTok Detection (Affichage unique) --------
+// -------- TikTok Detection --------
 (function detectTikTokBrowser() {
   const alreadySeen = localStorage.getItem("tiktokPopupSeen");
   if (alreadySeen) return;
@@ -445,7 +438,7 @@ let products = [];
   }
 })();
 
-// -------- Gestion du Thème (Dark par défaut) --------
+// -------- Gestion du Thème --------
 (function loadTheme() {
   const saved = localStorage.getItem("theme");
   if (saved === "light") {
@@ -463,69 +456,68 @@ themeToggle.addEventListener("click", () => {
   localStorage.setItem("theme", isLight ? "light" : "dark");
 });
 
-// -------- Chargement et parsing des fichiers TXT --------
+// -------- Chargement et Parsing Automatique --------
 async function loadData() {
   try {
-    const categoriesText = await fetch("categorie.txt").then(res => res.text());
-    const productsText = await fetch("Produit.txt").then(res => res.text());
+    const categoriesText = await fetch("categorie.txt?t=" + Date.now()).then(res => res.text());
+    const productsText = await fetch("Produit.txt?t=" + Date.now()).then(res => res.text());
 
-    // Récupération des catégories valides commençant par "/"
-    const categories = categoriesText
-      .split("\n")
-      .map(line => line.trim())
-      .filter(line => line.startsWith("/"))
-      .map(line => line.replace("/", "").trim());
+    // Nettoyage global des espaces ou retours chariots résiduels
+    const cleanCategoriesText = categoriesText.replace(/[\r\n]/g, "").trim();
+    const cleanProductsText = productsText.replace(/[\r\n]/g, "").trim();
 
-    parseProducts(productsText, categories);
+    // Split par # pour les catégories
+    const categories = cleanCategoriesText
+      .split("#")
+      .map(cat => cat.trim())
+      .filter(Boolean);
+
+    parseProducts(cleanProductsText, categories);
     renderProducts(products);
   } catch (err) {
-    console.error("Erreur lors du chargement des fichiers TXT :", err);
+    console.error("Erreur de chargement", err);
   }
 }
 
 function parseProducts(text, validCategories) {
-  const blocks = text
-    .split("/")
-    .map(block => block.trim())
-    .filter(Boolean);
-
+  // Les produits sont séparés par un double dièse "##"
+  const blocks = text.split("##").map(b => b.trim()).filter(Boolean);
   products = [];
 
   blocks.forEach(block => {
-    const lines = block
-      .split("\n")
-      .map(l => l.trim())
-      .filter(Boolean);
+    // À l'intérieur d'un bloc, les infos sont séparées par un simple dièse "#"
+    const infos = block.split("#").map(i => i.trim());
+    
+    if (infos.length < 5) return;
 
-    if (lines.length < 5) return;
+    const category = infos[0];
+    const name = infos[1];
+    const images = infos[2].split(",").map(img => img.trim()).filter(Boolean);
+    const bbd = infos[3];
+    const weidian = infos[4];
 
-    const category = lines[0];
-    const name = lines[1];
-    const images = lines[2].split(",").map(img => img.trim()).filter(Boolean);
-    const bbd = lines[3];
-    const weidian = lines[4];
-
-    // Vérifie si la catégorie du produit est présente dans categorie.txt
+    // Sécurité : n'affiche le produit que si sa catégorie est valide
     if (!validCategories.includes(category)) return;
 
     products.push({ category, name, images, bbd, weidian });
   });
 }
 
-// -------- Rendu HTML des Produits --------
+// -------- Rendu graphique --------
 function renderProducts(data) {
   categoryContainer.innerHTML = "";
-  const grouped = {};
+  
+  if (data.length === 0) {
+    categoryContainer.innerHTML = "<p style='text-align:center; color:var(--muted); margin-top:40px;'>Aucun produit trouvé.</p>";
+    return;
+  }
 
-  // Groupement des éléments par catégorie
+  const grouped = {};
   data.forEach(product => {
-    if (!grouped[product.category]) {
-      grouped[product.category] = [];
-    }
+    if (!grouped[product.category]) grouped[product.category] = [];
     grouped[product.category].push(product);
   });
 
-  // Construction de l'affichage par section
   Object.keys(grouped).forEach(category => {
     const section = document.createElement("section");
     section.className = "category-section";
@@ -546,11 +538,10 @@ function renderProducts(data) {
       clone.querySelector(".weidian-link").href = product.weidian;
 
       const imagesContainer = clone.querySelector(".product-images");
-
       product.images.forEach(url => {
         const img = document.createElement("img");
         img.src = url;
-        img.loading = "lazy"; // Optimisation des performances de chargement
+        img.loading = "lazy";
         imagesContainer.appendChild(img);
       });
 
@@ -563,7 +554,7 @@ function renderProducts(data) {
   });
 }
 
-// -------- Système de Recherche et de Tri --------
+// -------- Recherche & Tri --------
 function filterAndSort() {
   const value = searchInput.value.toLowerCase();
   let filtered = products.filter(product =>
@@ -583,9 +574,7 @@ function filterAndSort() {
 searchInput.addEventListener("input", filterAndSort);
 sortSelect.addEventListener("change", filterAndSort);
 
-// Lancement de l'application
 loadData();
 </script>
-
 </body>
 </html>
