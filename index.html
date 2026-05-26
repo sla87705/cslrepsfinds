@@ -649,28 +649,6 @@
       background: var(--input-bg);
     }
 
-    .popup-btn.price-action {
-      background: var(--success);
-      color: white;
-      margin-top: 8px;
-    }
-
-    .popup-btn.price-action:hover {
-      opacity: 0.9;
-    }
-
-    .price-input-group {
-      margin: 16px 0;
-    }
-
-    .price-input-group input {
-      width: 100%;
-      padding: 10px;
-      font-size: 1rem;
-      text-align: center;
-      border: 2px solid var(--accent);
-    }
-
     .popup-close-text {
       display: inline-block;
       margin-top: 16px;
@@ -790,11 +768,6 @@
       <a id="popupBbdLink" class="popup-btn bbd" target="_blank">Ouvrir le lien BBD</a>
       <a id="popupWeidianLink" class="popup-btn weidian" target="_blank">Ouvrir le lien Weidian</a>
     </div>
-
-    <div class="price-input-group">
-      <input type="number" id="priceInput" placeholder="Ajouter/modifier le prix (€)" step="0.01" />
-      <button id="savePriceBtn" class="popup-btn price-action">💰 Enregistrer le prix</button>
-    </div>
     
     <span id="closeProductPopup" class="popup-close-text">Fermer</span>
   </div>
@@ -856,7 +829,6 @@
 <main>
   <div id="categoryContainer"></div>
   
-  <!-- DASHBOARD -->
   <div id="dashboardContainer" class="dashboard-container">
     <div class="dashboard-header">
       <h1>📊 DASHBOARD RECAP</h1>
@@ -939,8 +911,6 @@ const popupProductSeller = document.getElementById("popupProductSeller");
 const popupBbdLink = document.getElementById("popupBbdLink");
 const popupWeidianLink = document.getElementById("popupWeidianLink");
 const closeProductPopup = document.getElementById("closeProductPopup");
-const priceInput = document.getElementById("priceInput");
-const savePriceBtn = document.getElementById("savePriceBtn");
 
 const exitDashboard = document.getElementById("exitDashboard");
 const resetStats = document.getElementById("resetStats");
@@ -951,29 +921,35 @@ let currentProduct = null;
 let isDashboardMode = false;
 
 // ============================================
-// SYSTÈME DE TRACKING DES VISITES
+// SYSTEM NATIF LOCALSTORAGE REFAIT (Remplace window.storage défaillant)
 // ============================================
+const appStorage = {
+  get: (key) => localStorage.getItem(key),
+  set: (key, value) => localStorage.setItem(key, value),
+  delete: (key) => localStorage.removeItem(key),
+  listKeys: (prefix) => Object.keys(localStorage).filter(k => k.startsWith(prefix))
+};
 
 function getVisitorId() {
-  let visitorId = localStorage.getItem('csl_visitor_id');
+  let visitorId = appStorage.get('csl_visitor_id');
   if (!visitorId) {
     visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('csl_visitor_id', visitorId);
+    appStorage.set('csl_visitor_id', visitorId);
   }
   return visitorId;
 }
 
-async function trackVisit() {
+function trackVisit() {
   try {
     const visitorId = getVisitorId();
     const now = new Date();
     const visitKey = `visit_${visitorId}_${now.getTime()}`;
     
-    await window.storage.set(visitKey, JSON.stringify({
+    appStorage.set(visitKey, JSON.stringify({
       visitorId: visitorId,
       timestamp: now.getTime(),
       date: now.toISOString()
-    }), true);
+    }));
     
     console.log('✅ Visite enregistrée');
   } catch (error) {
@@ -981,20 +957,18 @@ async function trackVisit() {
   }
 }
 
-async function getVisitStats() {
+function getVisitStats() {
   try {
-    const result = await window.storage.list('visit_', true);
-    if (!result || !result.keys) return { today: 0, week: 0, month: 0 };
+    const keys = appStorage.listKeys('visit_');
+    if (!keys || keys.length === 0) return { today: 0, week: 0, month: 0 };
     
     const now = new Date();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
     
-    // Début de la semaine (Lundi)
     const dayOfWeek = now.getDay();
     const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
     const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysToMonday).getTime();
     
-    // Début du mois
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
     
     const visitors = {
@@ -1003,11 +977,11 @@ async function getVisitStats() {
       month: new Set()
     };
     
-    for (const key of result.keys) {
+    for (const key of keys) {
       try {
-        const visitData = await window.storage.get(key, true);
-        if (visitData && visitData.value) {
-          const visit = JSON.parse(visitData.value);
+        const value = appStorage.get(key);
+        if (value) {
+          const visit = JSON.parse(value);
           const timestamp = visit.timestamp;
           const visitorId = visit.visitorId;
           
@@ -1038,75 +1012,43 @@ async function getVisitStats() {
 }
 
 // ============================================
-// SYSTÈME DE COMPTEUR DE CLICS
+// SYSTÈME DE COMPTEUR DE CLICS REFAIT
 // ============================================
 
 function getProductKey(product) {
   return `click_${product.name.replace(/\s+/g, '_')}`;
 }
 
-async function getProductClicks(product) {
-  try {
-    const key = getProductKey(product);
-    const result = await window.storage.get(key, true);
-    return result ? parseInt(result.value) : 0;
-  } catch (error) {
-    return 0;
-  }
+function getProductClicks(product) {
+  const key = getProductKey(product);
+  const val = appStorage.get(key);
+  return val ? parseInt(val) : 0;
 }
 
-async function incrementProductClick(product) {
+function incrementProductClick(product) {
   try {
     const key = getProductKey(product);
-    const current = await getProductClicks(product);
-    await window.storage.set(key, (current + 1).toString(), true);
+    const current = getProductClicks(product);
+    appStorage.set(key, (current + 1).toString());
   } catch (error) {
     console.error('Erreur incrémentation:', error);
   }
 }
 
-async function getAllProductClicks() {
-  try {
-    const result = await window.storage.list('click_', true);
-    if (!result || !result.keys) return {};
-    
-    const clicks = {};
-    for (const key of result.keys) {
-      try {
-        const data = await window.storage.get(key, true);
-        if (data && data.value) {
-          clicks[key] = parseInt(data.value);
-        }
-      } catch (e) {
-        console.error('Erreur lecture click:', e);
-      }
+function getAllProductClicks() {
+  const keys = appStorage.listKeys('click_');
+  const clicks = {};
+  for (const key of keys) {
+    const val = appStorage.get(key);
+    if (val) {
+      clicks[key] = parseInt(val);
     }
-    return clicks;
-  } catch (error) {
-    return {};
   }
-}
-
-// ============================================
-// SYSTÈME DE GESTION DES PRIX (STOCKAGE LOCAL)
-// Les prix sont stockés en mémoire et peuvent être exportés
-// ============================================
-
-function getPriceKey(product) {
-  return `price_${product.name.replace(/\s+/g, '_')}`;
+  return clicks;
 }
 
 function getProductPrice(product) {
-  // Retourne le prix depuis l'objet produit (chargé depuis Produit.txt)
   return product.price || null;
-}
-
-function setProductPriceInMemory(product, price) {
-  // Met à jour le prix dans l'objet produit en mémoire
-  const prod = products.find(p => p.name === product.name);
-  if (prod) {
-    prod.price = price;
-  }
 }
 
 // ============================================
@@ -1115,16 +1057,12 @@ function setProductPriceInMemory(product, price) {
 
 function generateProduitTxt() {
   let content = '';
-  
   products.forEach(product => {
     const images = product.images.join(',');
     const price = product.price || '';
     const seller = product.seller || '';
-    
-    // Format: ##Catégorie#Nom#Prix#Images#BBD#Weidian#Vendeur
-    content += `##${product.category}#${product.name}#${price}#${images}#${product.bbd}#${product.weidian}#${seller}`;
+    content += `##${product.category}#${product.name}#${price}#${images}#${product.bbd}#${product.weidian}#${seller}\n`;
   });
-  
   return content;
 }
 
@@ -1143,26 +1081,24 @@ function downloadProduitTxt() {
 
 downloadProduitFile.addEventListener('click', () => {
   downloadProduitTxt();
-  alert('✅ Fichier Produit.txt téléchargé !\n\nRemplacez votre ancien fichier par celui-ci pour sauvegarder les prix.');
+  alert('✅ Fichier Produit.txt téléchargé !\n\nRemplacez votre ancien fichier par celui-ci pour sauvegarder la configuration.');
 });
 
 // ============================================
 // AFFICHAGE DU DASHBOARD
 // ============================================
 
-async function showDashboard() {
+function showDashboard() {
   isDashboardMode = true;
   categoryContainer.style.display = 'none';
   dashboardContainer.classList.add('active');
   
-  // Charger les stats de visites
-  const stats = await getVisitStats();
+  const stats = getVisitStats();
   document.getElementById('statToday').textContent = stats.today;
   document.getElementById('statWeek').textContent = stats.week;
   document.getElementById('statMonth').textContent = stats.month;
   
-  // Charger les stats des produits
-  const clicks = await getAllProductClicks();
+  const clicks = getAllProductClicks();
   
   const productStats = products.map(product => ({
     product: product,
@@ -1208,29 +1144,16 @@ exitDashboard.addEventListener('click', () => {
   filterAndSort();
 });
 
-resetStats.addEventListener('click', async () => {
+resetStats.addEventListener('click', () => {
   if (confirm('⚠️ Voulez-vous vraiment réinitialiser toutes les statistiques ?')) {
-    try {
-      const clickKeys = await window.storage.list('click_', true);
-      if (clickKeys && clickKeys.keys) {
-        for (const key of clickKeys.keys) {
-          await window.storage.delete(key, true);
-        }
-      }
-      
-      const visitKeys = await window.storage.list('visit_', true);
-      if (visitKeys && visitKeys.keys) {
-        for (const key of visitKeys.keys) {
-          await window.storage.delete(key, true);
-        }
-      }
-      
-      alert('✅ Statistiques réinitialisées !');
-      showDashboard();
-    } catch (error) {
-      alert('❌ Erreur lors de la réinitialisation');
-      console.error(error);
-    }
+    const clickKeys = appStorage.listKeys('click_');
+    clickKeys.forEach(k => appStorage.delete(k));
+    
+    const visitKeys = appStorage.listKeys('visit_');
+    visitKeys.forEach(k => appStorage.delete(k));
+    
+    alert('✅ Statistiques réinitialisées !');
+    showDashboard();
   }
 });
 
@@ -1269,7 +1192,7 @@ themeToggle.addEventListener("click", () => {
 });
 
 // Popup Produit
-async function openLinksPopup(product) {
+function openLinksPopup(product) {
   currentProduct = product;
   popupProductTitle.textContent = product.name;
   popupProductCategory.textContent = `Catégorie : ${product.category}`;
@@ -1284,14 +1207,16 @@ async function openLinksPopup(product) {
   popupBbdLink.href = product.bbd;
   popupWeidianLink.href = product.weidian;
   
-  // Charger le prix existant
-  const existingPrice = getProductPrice(product);
-  priceInput.value = existingPrice !== null && existingPrice !== '' ? existingPrice : '';
-  
-  // Incrémenter le compteur de clics
-  await incrementProductClick(product);
+  // Incrémenter le compteur de clics natif
+  incrementProductClick(product);
   
   productPopup.classList.remove("hidden");
+  
+  // Rafraîchir doucement la grille des produits en arrière-plan pour afficher la nouvelle vue
+  const matchesSearch = searchInput.value.trim().toLowerCase();
+  if (matchesSearch !== "dashboardrecap") {
+     filterAndSort();
+  }
 }
 
 closeProductPopup.addEventListener("click", () => {
@@ -1303,20 +1228,6 @@ productPopup.addEventListener("click", (e) => {
   if (e.target === productPopup) {
     productPopup.classList.add("hidden");
     currentProduct = null;
-  }
-});
-
-savePriceBtn.addEventListener("click", async () => {
-  if (currentProduct && priceInput.value) {
-    const price = parseFloat(priceInput.value);
-    if (price > 0) {
-      setProductPriceInMemory(currentProduct, price);
-      alert('✅ Prix enregistré !\n\nPour sauvegarder définitivement, allez dans le DASHBOARD et téléchargez le nouveau fichier Produit.txt');
-      productPopup.classList.add("hidden");
-      currentProduct = null;
-      // Rafraîchir l'affichage
-      filterAndSort();
-    }
   }
 });
 
@@ -1361,13 +1272,9 @@ function parseProducts(text, validCategories, validSellers) {
   blocks.forEach(block => {
     const infos = block.split("#").map(i => i.trim());
     
-    // NOUVEAU FORMAT: Catégorie#Nom#Prix#Images#BBD#Weidian#Vendeur
-    // ANCIEN FORMAT: Catégorie#Nom#Images#BBD#Weidian#Vendeur
-    
     let category, name, price, images, bbd, weidian, seller;
     
     if (infos.length >= 7) {
-      // Nouveau format avec prix
       category = infos[0];
       name = infos[1];
       price = infos[2];
@@ -1376,7 +1283,6 @@ function parseProducts(text, validCategories, validSellers) {
       weidian = infos[5];
       seller = infos[6] || "";
     } else if (infos.length >= 5) {
-      // Ancien format sans prix
       category = infos[0];
       name = infos[1];
       price = "";
@@ -1385,7 +1291,7 @@ function parseProducts(text, validCategories, validSellers) {
       weidian = infos[4];
       seller = infos[5] || "";
     } else {
-      return; // Format invalide
+      return;
     }
     
     if (validSellers.length > 0 && seller && !validSellers.includes(seller)) {
@@ -1406,7 +1312,7 @@ function parseProducts(text, validCategories, validSellers) {
   });
 }
 
-async function renderProducts(data) {
+function renderProducts(data) {
   categoryContainer.innerHTML = "";
   if (data.length === 0) {
     categoryContainer.innerHTML = "<p style='text-align:center; color:var(--muted); margin-top:40px;'>Aucun produit trouvé.</p>";
@@ -1443,12 +1349,12 @@ async function renderProducts(data) {
         sellerTag.classList.remove("hidden");
       }
 
-      // Charger et afficher le compteur de clics
+      // Charger le compteur de clics local
       const clickCounter = clone.querySelector(".counter-value");
-      const clicks = await getProductClicks(product);
+      const clicks = getProductClicks(product);
       clickCounter.textContent = clicks;
 
-      // Afficher le prix si disponible
+      // Afficher le prix si disponible (Chargé depuis Produit.txt)
       const price = getProductPrice(product);
       if (price !== null && price !== '') {
         const priceBadge = document.createElement("div");
@@ -1475,7 +1381,6 @@ async function renderProducts(data) {
   }
 }
 
-// Nouvelle logique pour synchroniser la recherche PC et Mobile + DASHBOARD
 function filterAndSort(e) {
   if (e && e.target === mobileSearchInput) {
     searchInput.value = mobileSearchInput.value;
@@ -1485,13 +1390,11 @@ function filterAndSort(e) {
 
   const searchValue = searchInput.value.trim();
   
-  // DÉTECTION DU CODE SECRET DASHBOARD
   if (searchValue === "DASHBOARDRECAP") {
     showDashboard();
     return;
   }
   
-  // Sinon, filtrage normal
   if (isDashboardMode) {
     hideDashboard();
   }
@@ -1517,9 +1420,9 @@ sellerSelect.addEventListener("change", filterAndSort);
 categorySelect.addEventListener("change", filterAndSort); 
 
 // Initialisation
-(async function init() {
-  await trackVisit();
-  await loadData();
+(function init() {
+  trackVisit();
+  loadData();
 })();
 
 // Popup Automatique BBDBUY
