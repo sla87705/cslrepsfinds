@@ -26,6 +26,11 @@
       /* Couleur pour le tag vendeur bleu */
       --bg-seller: rgba(37, 99, 235, 0.2);
       --text-seller: #60a5fa;
+      
+      /* Couleurs pour les stats */
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
     }
 
     /* Thème Clair - Style Notion Pur */
@@ -43,6 +48,10 @@
       
       --bg-seller: #dbeafe;
       --text-seller: #1e40af;
+      
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
     }
 
     * {
@@ -225,6 +234,7 @@
       cursor: pointer;
       user-select: none;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
     }
 
     .product-card:hover {
@@ -234,6 +244,45 @@
 
     body.light .product-card:hover {
       box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    }
+
+    /* Compteur de clics */
+    .click-counter {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      backdrop-filter: blur(4px);
+    }
+
+    body.light .click-counter {
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* Badge prix */
+    .price-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: var(--success);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      z-index: 5;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
     /* Galerie photos */
@@ -300,6 +349,205 @@
       color: var(--text-seller);
       font-size: 0.7rem;
       font-weight: 600;
+    }
+
+    /* DASHBOARD STYLES */
+    .dashboard-container {
+      display: none;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .dashboard-container.active {
+      display: block;
+    }
+
+    .dashboard-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .dashboard-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--success));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .dashboard-header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .stat-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .stat-icon.today {
+      background: rgba(16, 185, 129, 0.15);
+    }
+
+    .stat-icon.week {
+      background: rgba(245, 158, 11, 0.15);
+    }
+
+    .stat-icon.month {
+      background: rgba(46, 170, 220, 0.15);
+    }
+
+    .stat-info h3 {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .product-stats-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .product-stats-section h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .product-stats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .product-stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: background 0.2s ease;
+    }
+
+    .product-stat-item:hover {
+      background: var(--border);
+    }
+
+    .product-stat-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      flex: 1;
+    }
+
+    .product-stat-clicks {
+      background: var(--accent);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-left: 12px;
+    }
+
+    .product-stat-price {
+      background: var(--success);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-left: 8px;
+    }
+
+    .dashboard-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .dashboard-btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .dashboard-btn.primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+    }
+
+    .dashboard-btn.primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .dashboard-btn.secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .dashboard-btn.secondary:hover {
+      background: var(--input-bg);
     }
 
     /* Popups */
@@ -389,6 +637,28 @@
       background: var(--input-bg);
     }
 
+    .popup-btn.price-action {
+      background: var(--success);
+      color: white;
+      margin-top: 8px;
+    }
+
+    .popup-btn.price-action:hover {
+      opacity: 0.9;
+    }
+
+    .price-input-group {
+      margin: 16px 0;
+    }
+
+    .price-input-group input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      text-align: center;
+      border: 2px solid var(--accent);
+    }
+
     .popup-close-text {
       display: inline-block;
       margin-top: 16px;
@@ -410,7 +680,7 @@
     /* Modifications Responsive Mobile MODIFIÉES ICI */
     @media (max-width: 768px) {
       .topbar {
-        position: absolute; /* Reste tout en haut de la page, ne suit plus le défilement */
+        position: absolute;
         top: 0;
         left: 0;
         width: 100%;
@@ -433,7 +703,6 @@
         justify-content: center;
       }
       
-      /* On cache la zone de recherche classique dans la topbar mobile */
       .topbar .actions .search-wrapper {
         display: none;
       }
@@ -444,7 +713,6 @@
         justify-content: center;
       }
       
-      /* Style de la nouvelle barre de recherche collante sur Mobile */
       .mobile-search-bar {
         display: block;
         position: sticky;
@@ -464,13 +732,24 @@
         padding: 8px 12px;
       }
 
-      /* Pour décaler le contenu pour pas qu'il soit caché sous l'en-tête absolue au départ */
       main {
         padding: 240px 12px 16px 12px; 
       }
       .products-grid {
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
         gap: 8px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .stat-value {
+        font-size: 2rem;
       }
     }
   </style>
@@ -481,7 +760,7 @@
   <div class="popup-card">
     <h2>Ouvre le site dans ton navigateur</h2>
     <p>
-      Pour une meilleure expérience, ouvre ce site via les <strong>3 petits points</strong> de TikTok puis cliquez sur <strong>“Ouvrir dans le navigateur”</strong>.
+      Pour une meilleure expérience, ouvre ce site via les <strong>3 petits points</strong> de TikTok puis cliquez sur <strong>"Ouvrir dans le navigateur"</strong>.
     </p>
     <button id="closePopup" style="width: 100%; background: var(--accent); color: white; border: none; padding: 10px; font-weight: 600; border-radius: 6px;">Compris</button>
   </div>
@@ -498,6 +777,11 @@
     <div class="popup-links-container">
       <a id="popupBbdLink" class="popup-btn bbd" target="_blank">Ouvrir le lien BBD</a>
       <a id="popupWeidianLink" class="popup-btn weidian" target="_blank">Ouvrir le lien Weidian</a>
+    </div>
+
+    <div class="price-input-group">
+      <input type="number" id="priceInput" placeholder="Ajouter un prix (€)" step="0.01" />
+      <button id="savePriceBtn" class="popup-btn price-action">💰 Enregistrer le prix</button>
     </div>
     
     <span id="closeProductPopup" class="popup-close-text">Fermer</span>
@@ -559,10 +843,61 @@
 
 <main>
   <div id="categoryContainer"></div>
+  
+  <!-- DASHBOARD -->
+  <div id="dashboardContainer" class="dashboard-container">
+    <div class="dashboard-header">
+      <h1>📊 DASHBOARD RECAP</h1>
+      <p>Statistiques et analyses de votre site CSL FINDS</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-icon today">📅</div>
+          <div class="stat-info">
+            <h3>Aujourd'hui</h3>
+          </div>
+        </div>
+        <div class="stat-value" id="statToday">0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-icon week">📆</div>
+          <div class="stat-info">
+            <h3>Cette semaine</h3>
+          </div>
+        </div>
+        <div class="stat-value" id="statWeek">0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-icon month">📈</div>
+          <div class="stat-info">
+            <h3>Ce mois</h3>
+          </div>
+        </div>
+        <div class="stat-value" id="statMonth">0</div>
+      </div>
+    </div>
+
+    <div class="product-stats-section">
+      <h2>🔥 Produits les plus cliqués</h2>
+      <div id="productStatsList" class="product-stats-list"></div>
+    </div>
+
+    <div class="dashboard-actions">
+      <button id="exitDashboard" class="dashboard-btn primary">← Retour aux produits</button>
+      <button id="resetStats" class="dashboard-btn secondary">🗑️ Réinitialiser les stats</button>
+    </div>
+  </div>
 </main>
 
 <template id="productTemplate">
   <div class="product-card">
+    <div class="click-counter">👁️ <span class="counter-value">0</span></div>
     <div class="product-images"></div>
     <div class="product-content">
       <h3 class="product-title"></h3>
@@ -576,9 +911,10 @@
 
 <script>
 const categoryContainer = document.getElementById("categoryContainer");
+const dashboardContainer = document.getElementById("dashboardContainer");
 const template = document.getElementById("productTemplate");
 const searchInput = document.getElementById("searchInput");
-const mobileSearchInput = document.getElementById("mobileSearchInput"); // Ajouté pour Mobile
+const mobileSearchInput = document.getElementById("mobileSearchInput");
 const sellerSelect = document.getElementById("sellerSelect");
 const categorySelect = document.getElementById("categorySelect"); 
 const themeToggle = document.getElementById("themeToggle");
@@ -590,8 +926,290 @@ const popupProductSeller = document.getElementById("popupProductSeller");
 const popupBbdLink = document.getElementById("popupBbdLink");
 const popupWeidianLink = document.getElementById("popupWeidianLink");
 const closeProductPopup = document.getElementById("closeProductPopup");
+const priceInput = document.getElementById("priceInput");
+const savePriceBtn = document.getElementById("savePriceBtn");
+
+const exitDashboard = document.getElementById("exitDashboard");
+const resetStats = document.getElementById("resetStats");
 
 let products = [];
+let currentProduct = null;
+let isDashboardMode = false;
+
+// ============================================
+// SYSTÈME DE TRACKING DES VISITES
+// ============================================
+
+function getVisitorId() {
+  let visitorId = localStorage.getItem('csl_visitor_id');
+  if (!visitorId) {
+    visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('csl_visitor_id', visitorId);
+  }
+  return visitorId;
+}
+
+async function trackVisit() {
+  try {
+    const visitorId = getVisitorId();
+    const now = new Date();
+    const visitKey = `visit_${visitorId}_${now.getTime()}`;
+    
+    await window.storage.set(visitKey, JSON.stringify({
+      visitorId: visitorId,
+      timestamp: now.getTime(),
+      date: now.toISOString()
+    }), true);
+    
+    console.log('✅ Visite enregistrée');
+  } catch (error) {
+    console.error('Erreur tracking visite:', error);
+  }
+}
+
+async function getVisitStats() {
+  try {
+    const result = await window.storage.list('visit_', true);
+    if (!result || !result.keys) return { today: 0, week: 0, month: 0 };
+    
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    
+    // Début de la semaine (Lundi)
+    const dayOfWeek = now.getDay();
+    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysToMonday).getTime();
+    
+    // Début du mois
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    
+    const visitors = {
+      today: new Set(),
+      week: new Set(),
+      month: new Set()
+    };
+    
+    for (const key of result.keys) {
+      try {
+        const visitData = await window.storage.get(key, true);
+        if (visitData && visitData.value) {
+          const visit = JSON.parse(visitData.value);
+          const timestamp = visit.timestamp;
+          const visitorId = visit.visitorId;
+          
+          if (timestamp >= todayStart) {
+            visitors.today.add(visitorId);
+          }
+          if (timestamp >= weekStart) {
+            visitors.week.add(visitorId);
+          }
+          if (timestamp >= monthStart) {
+            visitors.month.add(visitorId);
+          }
+        }
+      } catch (e) {
+        console.error('Erreur lecture visite:', e);
+      }
+    }
+    
+    return {
+      today: visitors.today.size,
+      week: visitors.week.size,
+      month: visitors.month.size
+    };
+  } catch (error) {
+    console.error('Erreur stats visites:', error);
+    return { today: 0, week: 0, month: 0 };
+  }
+}
+
+// ============================================
+// SYSTÈME DE COMPTEUR DE CLICS
+// ============================================
+
+function getProductKey(product) {
+  return `click_${product.name.replace(/\s+/g, '_')}`;
+}
+
+async function getProductClicks(product) {
+  try {
+    const key = getProductKey(product);
+    const result = await window.storage.get(key, true);
+    return result ? parseInt(result.value) : 0;
+  } catch (error) {
+    return 0;
+  }
+}
+
+async function incrementProductClick(product) {
+  try {
+    const key = getProductKey(product);
+    const current = await getProductClicks(product);
+    await window.storage.set(key, (current + 1).toString(), true);
+  } catch (error) {
+    console.error('Erreur incrémentation:', error);
+  }
+}
+
+async function getAllProductClicks() {
+  try {
+    const result = await window.storage.list('click_', true);
+    if (!result || !result.keys) return {};
+    
+    const clicks = {};
+    for (const key of result.keys) {
+      try {
+        const data = await window.storage.get(key, true);
+        if (data && data.value) {
+          clicks[key] = parseInt(data.value);
+        }
+      } catch (e) {
+        console.error('Erreur lecture click:', e);
+      }
+    }
+    return clicks;
+  } catch (error) {
+    return {};
+  }
+}
+
+// ============================================
+// SYSTÈME DE GESTION DES PRIX
+// ============================================
+
+function getPriceKey(product) {
+  return `price_${product.name.replace(/\s+/g, '_')}`;
+}
+
+async function getProductPrice(product) {
+  try {
+    const key = getPriceKey(product);
+    const result = await window.storage.get(key, true);
+    return result ? parseFloat(result.value) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function setProductPrice(product, price) {
+  try {
+    const key = getPriceKey(product);
+    await window.storage.set(key, price.toString(), true);
+  } catch (error) {
+    console.error('Erreur sauvegarde prix:', error);
+  }
+}
+
+async function getAllProductPrices() {
+  try {
+    const result = await window.storage.list('price_', true);
+    if (!result || !result.keys) return {};
+    
+    const prices = {};
+    for (const key of result.keys) {
+      try {
+        const data = await window.storage.get(key, true);
+        if (data && data.value) {
+          prices[key] = parseFloat(data.value);
+        }
+      } catch (e) {
+        console.error('Erreur lecture prix:', e);
+      }
+    }
+    return prices;
+  } catch (error) {
+    return {};
+  }
+}
+
+// ============================================
+// AFFICHAGE DU DASHBOARD
+// ============================================
+
+async function showDashboard() {
+  isDashboardMode = true;
+  categoryContainer.style.display = 'none';
+  dashboardContainer.classList.add('active');
+  
+  // Charger les stats de visites
+  const stats = await getVisitStats();
+  document.getElementById('statToday').textContent = stats.today;
+  document.getElementById('statWeek').textContent = stats.week;
+  document.getElementById('statMonth').textContent = stats.month;
+  
+  // Charger les stats des produits
+  const clicks = await getAllProductClicks();
+  const prices = await getAllProductPrices();
+  
+  const productStats = products.map(product => ({
+    product: product,
+    clicks: clicks[getProductKey(product)] || 0,
+    price: prices[getPriceKey(product)] || null
+  })).sort((a, b) => b.clicks - a.clicks);
+  
+  const productStatsList = document.getElementById('productStatsList');
+  productStatsList.innerHTML = '';
+  
+  if (productStats.length === 0) {
+    productStatsList.innerHTML = '<p style="text-align:center; color:var(--muted);">Aucune donnée disponible</p>';
+  } else {
+    productStats.forEach(stat => {
+      const item = document.createElement('div');
+      item.className = 'product-stat-item';
+      
+      let priceHTML = '';
+      if (stat.price !== null) {
+        priceHTML = `<span class="product-stat-price">${stat.price.toFixed(2)}€</span>`;
+      }
+      
+      item.innerHTML = `
+        <span class="product-stat-name">${stat.product.name}</span>
+        ${priceHTML}
+        <span class="product-stat-clicks">${stat.clicks} 👁️</span>
+      `;
+      productStatsList.appendChild(item);
+    });
+  }
+}
+
+function hideDashboard() {
+  isDashboardMode = false;
+  dashboardContainer.classList.remove('active');
+  categoryContainer.style.display = 'block';
+}
+
+exitDashboard.addEventListener('click', () => {
+  hideDashboard();
+  searchInput.value = '';
+  mobileSearchInput.value = '';
+  filterAndSort();
+});
+
+resetStats.addEventListener('click', async () => {
+  if (confirm('⚠️ Voulez-vous vraiment réinitialiser toutes les statistiques ?')) {
+    try {
+      const clickKeys = await window.storage.list('click_', true);
+      if (clickKeys && clickKeys.keys) {
+        for (const key of clickKeys.keys) {
+          await window.storage.delete(key, true);
+        }
+      }
+      
+      const visitKeys = await window.storage.list('visit_', true);
+      if (visitKeys && visitKeys.keys) {
+        for (const key of visitKeys.keys) {
+          await window.storage.delete(key, true);
+        }
+      }
+      
+      alert('✅ Statistiques réinitialisées !');
+      showDashboard();
+    } catch (error) {
+      alert('❌ Erreur lors de la réinitialisation');
+      console.error(error);
+    }
+  }
+});
 
 // TikTok Detection
 (function detectTikTokBrowser() {
@@ -628,23 +1246,53 @@ themeToggle.addEventListener("click", () => {
 });
 
 // Popup Produit
-function openLinksPopup(product) {
+async function openLinksPopup(product) {
+  currentProduct = product;
   popupProductTitle.textContent = product.name;
   popupProductCategory.textContent = `Catégorie : ${product.category}`;
+  
   if (product.seller) {
     popupProductSeller.textContent = `• Vendeur : ${product.seller}`;
     popupProductSeller.classList.remove("hidden");
   } else {
     popupProductSeller.classList.add("hidden");
   }
+  
   popupBbdLink.href = product.bbd;
   popupWeidianLink.href = product.weidian;
+  
+  // Charger le prix existant
+  const existingPrice = await getProductPrice(product);
+  priceInput.value = existingPrice !== null ? existingPrice : '';
+  
+  // Incrémenter le compteur de clics
+  await incrementProductClick(product);
+  
   productPopup.classList.remove("hidden");
 }
 
-closeProductPopup.addEventListener("click", () => productPopup.classList.add("hidden"));
+closeProductPopup.addEventListener("click", () => {
+  productPopup.classList.add("hidden");
+  currentProduct = null;
+});
+
 productPopup.addEventListener("click", (e) => {
-  if (e.target === productPopup) productPopup.classList.add("hidden");
+  if (e.target === productPopup) {
+    productPopup.classList.add("hidden");
+    currentProduct = null;
+  }
+});
+
+savePriceBtn.addEventListener("click", async () => {
+  if (currentProduct && priceInput.value) {
+    const price = parseFloat(priceInput.value);
+    if (price > 0) {
+      await setProductPrice(currentProduct, price);
+      alert('✅ Prix enregistré avec succès !');
+      // Rafraîchir l'affichage pour montrer le badge prix
+      filterAndSort();
+    }
+  }
 });
 
 // Chargement des données
@@ -706,7 +1354,7 @@ function parseProducts(text, validCategories, validSellers) {
   });
 }
 
-function renderProducts(data) {
+async function renderProducts(data) {
   categoryContainer.innerHTML = "";
   if (data.length === 0) {
     categoryContainer.innerHTML = "<p style='text-align:center; color:var(--muted); margin-top:40px;'>Aucun produit trouvé.</p>";
@@ -719,7 +1367,7 @@ function renderProducts(data) {
     grouped[product.category].push(product);
   });
 
-  Object.keys(grouped).forEach(category => {
+  for (const category of Object.keys(grouped)) {
     const section = document.createElement("section");
     section.className = "category-section";
 
@@ -730,7 +1378,7 @@ function renderProducts(data) {
     const grid = document.createElement("div");
     grid.className = "products-grid";
 
-    grouped[category].forEach(product => {
+    for (const product of grouped[category]) {
       const clone = template.content.cloneNode(true);
       const cardElement = clone.querySelector(".product-card");
 
@@ -743,6 +1391,20 @@ function renderProducts(data) {
         sellerTag.classList.remove("hidden");
       }
 
+      // Charger et afficher le compteur de clics
+      const clickCounter = clone.querySelector(".counter-value");
+      const clicks = await getProductClicks(product);
+      clickCounter.textContent = clicks;
+
+      // Charger et afficher le prix si disponible
+      const price = await getProductPrice(product);
+      if (price !== null) {
+        const priceBadge = document.createElement("div");
+        priceBadge.className = "price-badge";
+        priceBadge.textContent = `${price.toFixed(2)}€`;
+        cardElement.appendChild(priceBadge);
+      }
+
       const imagesContainer = clone.querySelector(".product-images");
       product.images.forEach(url => {
         const img = document.createElement("img");
@@ -753,29 +1415,41 @@ function renderProducts(data) {
 
       cardElement.addEventListener("click", () => openLinksPopup(product));
       grid.appendChild(clone);
-    });
+    }
 
     section.appendChild(title);
     section.appendChild(grid);
     categoryContainer.appendChild(section);
-  });
+  }
 }
 
-// Nouvelle logique pour synchroniser la recherche PC et Mobile
+// Nouvelle logique pour synchroniser la recherche PC et Mobile + DASHBOARD
 function filterAndSort(e) {
-  // Si on tape sur mobile, on synchronise la valeur sur PC, et inversement
   if (e && e.target === mobileSearchInput) {
     searchInput.value = mobileSearchInput.value;
   } else if (e && e.target === searchInput) {
     mobileSearchInput.value = searchInput.value;
   }
 
-  const searchValue = searchInput.value.toLowerCase();
+  const searchValue = searchInput.value.trim();
+  
+  // DÉTECTION DU CODE SECRET DASHBOARD
+  if (searchValue === "DASHBOARDRECAP") {
+    showDashboard();
+    return;
+  }
+  
+  // Sinon, filtrage normal
+  if (isDashboardMode) {
+    hideDashboard();
+  }
+  
+  const searchLower = searchValue.toLowerCase();
   const sellerValue = sellerSelect.value;
   const categoryValue = categorySelect.value; 
   
   let filtered = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchValue);
+    const matchesSearch = product.name.toLowerCase().includes(searchLower);
     const matchesSeller = (sellerValue === "all") || (product.seller === sellerValue);
     const matchesCategory = (categoryValue === "all") || (product.category.toUpperCase() === categoryValue.toUpperCase());
     
@@ -786,11 +1460,15 @@ function filterAndSort(e) {
 }
 
 searchInput.addEventListener("input", filterAndSort);
-mobileSearchInput.addEventListener("input", filterAndSort); // Ajouté pour Mobile
+mobileSearchInput.addEventListener("input", filterAndSort);
 sellerSelect.addEventListener("change", filterAndSort);
 categorySelect.addEventListener("change", filterAndSort); 
 
-loadData();
+// Initialisation
+(async function init() {
+  await trackVisit();
+  await loadData();
+})();
 
 // Popup Automatique BBDBUY
 (function initBbdPopup() {
@@ -802,7 +1480,6 @@ loadData();
   }
 })();
 
-// Fonction fermeture popup
 function closePopup() {
   if (document.getElementById('noMore').checked) {
     localStorage.setItem('hideBBD', 'true');
