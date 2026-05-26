@@ -519,6 +519,7 @@
       gap: 12px;
       justify-content: center;
       margin-top: 24px;
+      flex-wrap: wrap;
     }
 
     .dashboard-btn {
@@ -548,6 +549,17 @@
 
     .dashboard-btn.secondary:hover {
       background: var(--input-bg);
+    }
+
+    .dashboard-btn.success {
+      background: var(--success);
+      color: white;
+      border: none;
+    }
+
+    .dashboard-btn.success:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
     }
 
     /* Popups */
@@ -780,7 +792,7 @@
     </div>
 
     <div class="price-input-group">
-      <input type="number" id="priceInput" placeholder="Ajouter un prix (€)" step="0.01" />
+      <input type="number" id="priceInput" placeholder="Ajouter/modifier le prix (€)" step="0.01" />
       <button id="savePriceBtn" class="popup-btn price-action">💰 Enregistrer le prix</button>
     </div>
     
@@ -890,6 +902,7 @@
 
     <div class="dashboard-actions">
       <button id="exitDashboard" class="dashboard-btn primary">← Retour aux produits</button>
+      <button id="downloadProduitFile" class="dashboard-btn success">📥 Télécharger Produit.txt</button>
       <button id="resetStats" class="dashboard-btn secondary">🗑️ Réinitialiser les stats</button>
     </div>
   </div>
@@ -931,6 +944,7 @@ const savePriceBtn = document.getElementById("savePriceBtn");
 
 const exitDashboard = document.getElementById("exitDashboard");
 const resetStats = document.getElementById("resetStats");
+const downloadProduitFile = document.getElementById("downloadProduitFile");
 
 let products = [];
 let currentProduct = null;
@@ -1074,53 +1088,63 @@ async function getAllProductClicks() {
 }
 
 // ============================================
-// SYSTÈME DE GESTION DES PRIX
+// SYSTÈME DE GESTION DES PRIX (STOCKAGE LOCAL)
+// Les prix sont stockés en mémoire et peuvent être exportés
 // ============================================
 
 function getPriceKey(product) {
   return `price_${product.name.replace(/\s+/g, '_')}`;
 }
 
-async function getProductPrice(product) {
-  try {
-    const key = getPriceKey(product);
-    const result = await window.storage.get(key, true);
-    return result ? parseFloat(result.value) : null;
-  } catch (error) {
-    return null;
+function getProductPrice(product) {
+  // Retourne le prix depuis l'objet produit (chargé depuis Produit.txt)
+  return product.price || null;
+}
+
+function setProductPriceInMemory(product, price) {
+  // Met à jour le prix dans l'objet produit en mémoire
+  const prod = products.find(p => p.name === product.name);
+  if (prod) {
+    prod.price = price;
   }
 }
 
-async function setProductPrice(product, price) {
-  try {
-    const key = getPriceKey(product);
-    await window.storage.set(key, price.toString(), true);
-  } catch (error) {
-    console.error('Erreur sauvegarde prix:', error);
-  }
-}
+// ============================================
+// GÉNÉRATION DU FICHIER PRODUIT.TXT
+// ============================================
 
-async function getAllProductPrices() {
-  try {
-    const result = await window.storage.list('price_', true);
-    if (!result || !result.keys) return {};
+function generateProduitTxt() {
+  let content = '';
+  
+  products.forEach(product => {
+    const images = product.images.join(',');
+    const price = product.price || '';
+    const seller = product.seller || '';
     
-    const prices = {};
-    for (const key of result.keys) {
-      try {
-        const data = await window.storage.get(key, true);
-        if (data && data.value) {
-          prices[key] = parseFloat(data.value);
-        }
-      } catch (e) {
-        console.error('Erreur lecture prix:', e);
-      }
-    }
-    return prices;
-  } catch (error) {
-    return {};
-  }
+    // Format: ##Catégorie#Nom#Prix#Images#BBD#Weidian#Vendeur
+    content += `##${product.category}#${product.name}#${price}#${images}#${product.bbd}#${product.weidian}#${seller}`;
+  });
+  
+  return content;
 }
+
+function downloadProduitTxt() {
+  const content = generateProduitTxt();
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Produit.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+downloadProduitFile.addEventListener('click', () => {
+  downloadProduitTxt();
+  alert('✅ Fichier Produit.txt téléchargé !\n\nRemplacez votre ancien fichier par celui-ci pour sauvegarder les prix.');
+});
 
 // ============================================
 // AFFICHAGE DU DASHBOARD
@@ -1139,12 +1163,11 @@ async function showDashboard() {
   
   // Charger les stats des produits
   const clicks = await getAllProductClicks();
-  const prices = await getAllProductPrices();
   
   const productStats = products.map(product => ({
     product: product,
     clicks: clicks[getProductKey(product)] || 0,
-    price: prices[getPriceKey(product)] || null
+    price: product.price || null
   })).sort((a, b) => b.clicks - a.clicks);
   
   const productStatsList = document.getElementById('productStatsList');
@@ -1158,8 +1181,8 @@ async function showDashboard() {
       item.className = 'product-stat-item';
       
       let priceHTML = '';
-      if (stat.price !== null) {
-        priceHTML = `<span class="product-stat-price">${stat.price.toFixed(2)}€</span>`;
+      if (stat.price !== null && stat.price !== '') {
+        priceHTML = `<span class="product-stat-price">${parseFloat(stat.price).toFixed(2)}€</span>`;
       }
       
       item.innerHTML = `
@@ -1262,8 +1285,8 @@ async function openLinksPopup(product) {
   popupWeidianLink.href = product.weidian;
   
   // Charger le prix existant
-  const existingPrice = await getProductPrice(product);
-  priceInput.value = existingPrice !== null ? existingPrice : '';
+  const existingPrice = getProductPrice(product);
+  priceInput.value = existingPrice !== null && existingPrice !== '' ? existingPrice : '';
   
   // Incrémenter le compteur de clics
   await incrementProductClick(product);
@@ -1287,9 +1310,11 @@ savePriceBtn.addEventListener("click", async () => {
   if (currentProduct && priceInput.value) {
     const price = parseFloat(priceInput.value);
     if (price > 0) {
-      await setProductPrice(currentProduct, price);
-      alert('✅ Prix enregistré avec succès !');
-      // Rafraîchir l'affichage pour montrer le badge prix
+      setProductPriceInMemory(currentProduct, price);
+      alert('✅ Prix enregistré !\n\nPour sauvegarder définitivement, allez dans le DASHBOARD et téléchargez le nouveau fichier Produit.txt');
+      productPopup.classList.add("hidden");
+      currentProduct = null;
+      // Rafraîchir l'affichage
       filterAndSort();
     }
   }
@@ -1335,14 +1360,33 @@ function parseProducts(text, validCategories, validSellers) {
 
   blocks.forEach(block => {
     const infos = block.split("#").map(i => i.trim());
-    if (infos.length < 5) return;
-
-    const category = infos[0];
-    const name = infos[1];
-    const images = infos[2].split(",").map(img => img.trim()).filter(Boolean);
-    const bbd = infos[3];
-    const weidian = infos[4];
-    let seller = infos[5] || "";
+    
+    // NOUVEAU FORMAT: Catégorie#Nom#Prix#Images#BBD#Weidian#Vendeur
+    // ANCIEN FORMAT: Catégorie#Nom#Images#BBD#Weidian#Vendeur
+    
+    let category, name, price, images, bbd, weidian, seller;
+    
+    if (infos.length >= 7) {
+      // Nouveau format avec prix
+      category = infos[0];
+      name = infos[1];
+      price = infos[2];
+      images = infos[3].split(",").map(img => img.trim()).filter(Boolean);
+      bbd = infos[4];
+      weidian = infos[5];
+      seller = infos[6] || "";
+    } else if (infos.length >= 5) {
+      // Ancien format sans prix
+      category = infos[0];
+      name = infos[1];
+      price = "";
+      images = infos[2].split(",").map(img => img.trim()).filter(Boolean);
+      bbd = infos[3];
+      weidian = infos[4];
+      seller = infos[5] || "";
+    } else {
+      return; // Format invalide
+    }
     
     if (validSellers.length > 0 && seller && !validSellers.includes(seller)) {
       seller = "";
@@ -1350,7 +1394,15 @@ function parseProducts(text, validCategories, validSellers) {
 
     if (!validCategories.includes(category)) return;
 
-    products.push({ category, name, images, bbd, weidian, seller });
+    products.push({ 
+      category, 
+      name, 
+      price: price || null, 
+      images, 
+      bbd, 
+      weidian, 
+      seller 
+    });
   });
 }
 
@@ -1396,12 +1448,12 @@ async function renderProducts(data) {
       const clicks = await getProductClicks(product);
       clickCounter.textContent = clicks;
 
-      // Charger et afficher le prix si disponible
-      const price = await getProductPrice(product);
-      if (price !== null) {
+      // Afficher le prix si disponible
+      const price = getProductPrice(product);
+      if (price !== null && price !== '') {
         const priceBadge = document.createElement("div");
         priceBadge.className = "price-badge";
-        priceBadge.textContent = `${price.toFixed(2)}€`;
+        priceBadge.textContent = `${parseFloat(price).toFixed(2)}€`;
         cardElement.appendChild(priceBadge);
       }
 
