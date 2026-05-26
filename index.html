@@ -68,7 +68,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Barre supérieure (Topbar) - Reste en haut sur PC, défile sur Mobile */
+    /* Barre supérieure (Topbar) */
     .topbar {
       position: sticky;
       top: 0;
@@ -99,7 +99,6 @@
       margin-top: 2px;
     }
 
-    /* Conteneur Titre + Liens Réseaux */
     .brand-container {
       display: flex;
       align-items: center;
@@ -112,7 +111,6 @@
       align-items: center;
     }
 
-    /* Centrage absolu de l'image à l'intérieur du bouton */
     .social-btn {
       display: flex !important;
       align-items: center !important;
@@ -141,7 +139,6 @@
       display: block;
     }
 
-    /* Zone des Actions (Filtres, Recherche, Thème) */
     .actions {
       display: flex;
       gap: 10px;
@@ -152,9 +149,8 @@
       position: relative;
     }
 
-    /* Nouvelle barre de recherche collante uniquement pour Mobile */
     .mobile-search-bar {
-      display: none; /* Cachée sur PC */
+      display: none;
     }
 
     input, select, button {
@@ -185,14 +181,12 @@
       padding: 6px 10px;
     }
 
-    /* Conteneur principal */
     main {
       max-width: 1500px;
       margin: 0 auto;
       padding: 24px 24px;
     }
 
-    /* Sections par Catégorie */
     .category-section {
       margin-bottom: 36px;
     }
@@ -216,14 +210,12 @@
       background: var(--border);
     }
 
-    /* Grille de produits */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 12px;
     }
 
-    /* Carte Produit */
     .product-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -246,31 +238,11 @@
       box-shadow: 0 6px 12px rgba(0,0,0,0.05);
     }
 
-    /* Compteur de clics */
-    .click-counter {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      z-index: 5;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      backdrop-filter: blur(4px);
+    /* Le compteur de clics secret "👁️" est retiré de la carte publique */
+    .dashboard-counter-only {
+      display: none;
     }
 
-    body.light .click-counter {
-      background: rgba(255, 255, 255, 0.9);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    /* Badge prix */
     .price-badge {
       position: absolute;
       top: 8px;
@@ -285,7 +257,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
-    /* Galerie photos */
     .product-images {
       display: flex;
       overflow-x: auto;
@@ -309,7 +280,6 @@
       scroll-snap-align: start;
     }
 
-    /* Contenu de la carte */
     .product-content {
       padding: 10px;
       display: flex;
@@ -398,12 +368,6 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     }
 
     .stat-card-header {
@@ -422,15 +386,7 @@
       font-size: 1.5rem;
     }
 
-    .stat-icon.today {
-      background: rgba(16, 185, 129, 0.15);
-    }
-
-    .stat-icon.week {
-      background: rgba(245, 158, 11, 0.15);
-    }
-
-    .stat-icon.month {
+    .stat-icon.global {
       background: rgba(46, 170, 220, 0.15);
     }
 
@@ -481,11 +437,6 @@
       background: var(--input-bg);
       border: 1px solid var(--border);
       border-radius: 8px;
-      transition: background 0.2s ease;
-    }
-
-    .product-stat-item:hover {
-      background: var(--border);
     }
 
     .product-stat-name {
@@ -541,25 +492,10 @@
       transform: translateY(-2px);
     }
 
-    .dashboard-btn.secondary {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .dashboard-btn.secondary:hover {
-      background: var(--input-bg);
-    }
-
     .dashboard-btn.success {
       background: var(--success);
       color: white;
       border: none;
-    }
-
-    .dashboard-btn.success:hover {
-      opacity: 0.9;
-      transform: translateY(-2px);
     }
 
     /* Popups */
@@ -623,11 +559,6 @@
       font-weight: 600;
       text-align: center;
       display: block;
-      transition: background 0.15s ease, transform 0.1s ease;
-    }
-
-    .popup-btn:active {
-      transform: scale(0.98);
     }
 
     .popup-btn.bbd {
@@ -635,18 +566,10 @@
       color: #ffffff;
     }
 
-    .popup-btn.bbd:hover {
-      background: var(--accent-hover);
-    }
-
     .popup-btn.weidian {
       background: transparent;
       border: 1px solid var(--border);
       color: var(--text);
-    }
-
-    .popup-btn.weidian:hover {
-      background: var(--input-bg);
     }
 
     .popup-close-text {
@@ -667,7 +590,6 @@
       to { opacity: 1; }
     }
 
-    /* Modifications Responsive Mobile MODIFIÉES ICI */
     @media (max-width: 768px) {
       .topbar {
         position: absolute;
@@ -692,17 +614,14 @@
         width: 100%;
         justify-content: center;
       }
-      
       .topbar .actions .search-wrapper {
         display: none;
       }
-      
       .actions {
         width: 100%;
         flex-wrap: nowrap;
         justify-content: center;
       }
-      
       .mobile-search-bar {
         display: block;
         position: sticky;
@@ -721,7 +640,6 @@
         width: 100%;
         padding: 8px 12px;
       }
-
       main {
         padding: 240px 12px 16px 12px; 
       }
@@ -729,17 +647,8 @@
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
         gap: 8px;
       }
-
       .stats-grid {
         grid-template-columns: 1fr;
-      }
-
-      .dashboard-header h1 {
-        font-size: 1.5rem;
-      }
-
-      .stat-value {
-        font-size: 2rem;
       }
     }
   </style>
@@ -749,9 +658,7 @@
 <div id="tiktokPopup" class="popup-overlay hidden">
   <div class="popup-card">
     <h2>Ouvre le site dans ton navigateur</h2>
-    <p>
-      Pour une meilleure expérience, ouvre ce site via les <strong>3 petits points</strong> de TikTok puis cliquez sur <strong>"Ouvrir dans le navigateur"</strong>.
-    </p>
+    <p>Pour une meilleure expérience, ouvre ce site via les <strong>3 petits points</strong> de TikTok puis cliquez sur <strong>"Ouvrir dans le navigateur"</strong>.</p>
     <button id="closePopup" style="width: 100%; background: var(--accent); color: white; border: none; padding: 10px; font-weight: 600; border-radius: 6px;">Compris</button>
   </div>
 </div>
@@ -763,12 +670,10 @@
       <span id="popupProductCategory">Catégorie</span>
       <span id="popupProductSeller"></span>
     </div>
-    
     <div class="popup-links-container">
       <a id="popupBbdLink" class="popup-btn bbd" target="_blank">Ouvrir le lien BBD</a>
       <a id="popupWeidianLink" class="popup-btn weidian" target="_blank">Ouvrir le lien Weidian</a>
     </div>
-    
     <span id="closeProductPopup" class="popup-close-text">Fermer</span>
   </div>
 </div>
@@ -779,35 +684,17 @@
       <h1>CSL FINDS</h1>
       <p>Les meilleurs liens !</p>
     </div>
-    
     <div class="social-links">
-      <a href="https://discord.gg/xN6eeesfD" target="_blank" class="social-btn discord" title="Rejoindre le Discord">
-        <img src="https://th.bing.com/th/id/OIP.EZkdm25nbQDs_PjFN8hmewHaHa?w=179&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Discord">
-      </a>
-
-      <a href="https://t.me/+c6FdBetY4TQ5Zjdk" target="_blank" class="social-btn telegram" title="Rejoindre le Telegram">
-        <img src="https://th.bing.com/th/id/OIP.RoaeSbQ4aLaB6ifctJ5eBAHaHa?w=179&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Telegram">
-      </a>
-
-      <a href="https://www.tiktok.com/@bbdbuyxyou?is_from_webapp=1&sender_device=pc" target="_blank" class="social-btn tiktok" title="Nous suivre sur TikTok">
-        <img src="https://th.bing.com/th/id/OIP.hG2pQRJiUa9gxkLFPQy6tQHaHa?w=170&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="TikTok">
-      </a>
-
-      <a href="https://www.bbdbuyeu.com/register?inviteCode=hQUDCD" target="_blank" class="social-btn bbd-nav" title="S'inscrire sur BbdBuy">
-        <img src="https://th.bing.com/th/id/OIP.-ykdS5LGPrH4ftZI26C9iAHaHa?w=166&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="BbdBuy">
-      </a>
+      <a href="https://discord.gg/xN6eeesfD" target="_blank" class="social-btn discord"><img src="https://th.bing.com/th/id/OIP.EZkdm25nbQDs_PjFN8hmewHaHa?w=179&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Discord"></a>
+      <a href="https://t.me/+c6FdBetY4TQ5Zjdk" target="_blank" class="social-btn telegram"><img src="https://th.bing.com/th/id/OIP.RoaeSbQ4aLaB6ifctJ5eBAHaHa?w=179&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Telegram"></a>
+      <a href="https://www.tiktok.com/@bbdbuyxyou?is_from_webapp=1&sender_device=pc" target="_blank" class="social-btn tiktok"><img src="https://th.bing.com/th/id/OIP.hG2pQRJiUa9gxkLFPQy6tQHaHa?w=170&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="TikTok"></a>
+      <a href="https://www.bbdbuyeu.com/register?inviteCode=hQUDCD" target="_blank" class="social-btn bbd-nav"><img src="https://th.bing.com/th/id/OIP.-ykdS5LGPrH4ftZI26C9iAHaHa?w=166&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="BbdBuy"></a>
     </div>
   </div>
 
   <div class="actions">
-    <div class="search-wrapper">
-      <input type="text" id="searchInput" placeholder="Rechercher un produit..." />
-    </div>
-
-    <select id="sellerSelect">
-      <option value="all">Tous les vendeurs</option>
-    </select>
-
+    <div class="search-wrapper"><input type="text" id="searchInput" placeholder="Rechercher un produit..." /></div>
+    <select id="sellerSelect"><option value="all">Tous les vendeurs</option></select>
     <select id="categorySelect">
       <option value="all">Toutes les catégories</option>
       <option value="PULL">PULL</option>
@@ -817,72 +704,45 @@
       <option value="T-SHIRT">T-SHIRT</option>
       <option value="MANTEAU">MANTEAU</option>
     </select>
-
-    <button id="themeToggle" title="Changer le thème">🌙</button>
+    <button id="themeToggle">🌙</button>
   </div>
 </header>
 
-<div class="mobile-search-bar">
-  <input type="text" id="mobileSearchInput" placeholder="🔍 Rechercher un produit..." />
-</div>
+<div class="mobile-search-bar"><input type="text" id="mobileSearchInput" placeholder="🔍 Rechercher un produit..." /></div>
 
 <main>
   <div id="categoryContainer"></div>
   
   <div id="dashboardContainer" class="dashboard-container">
     <div class="dashboard-header">
-      <h1>📊 DASHBOARD RECAP</h1>
-      <p>Statistiques et analyses de votre site CSL FINDS</p>
+      <h1>📊 DASHBOARD RECAP (GLOBAL)</h1>
+      <p>Statistiques globales et partagées en temps réel pour tous vos visiteurs</p>
     </div>
 
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-card-header">
-          <div class="stat-icon today">📅</div>
-          <div class="stat-info">
-            <h3>Aujourd'hui</h3>
-          </div>
+          <div class="stat-icon global">🌐</div>
+          <div class="stat-info"><h3>Total clics uniques du site</h3></div>
         </div>
-        <div class="stat-value" id="statToday">0</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-card-header">
-          <div class="stat-icon week">📆</div>
-          <div class="stat-info">
-            <h3>Cette semaine</h3>
-          </div>
-        </div>
-        <div class="stat-value" id="statWeek">0</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-card-header">
-          <div class="stat-icon month">📈</div>
-          <div class="stat-info">
-            <h3>Ce mois</h3>
-          </div>
-        </div>
-        <div class="stat-value" id="statMonth">0</div>
+        <div class="stat-value" id="statGlobalSite">Chargement...</div>
       </div>
     </div>
 
     <div class="product-stats-section">
-      <h2>🔥 Produits les plus cliqués</h2>
+      <h2>🔥 Classement des clics par produit (Vues réelles)</h2>
       <div id="productStatsList" class="product-stats-list"></div>
     </div>
 
     <div class="dashboard-actions">
       <button id="exitDashboard" class="dashboard-btn primary">← Retour aux produits</button>
       <button id="downloadProduitFile" class="dashboard-btn success">📥 Télécharger Produit.txt</button>
-      <button id="resetStats" class="dashboard-btn secondary">🗑️ Réinitialiser les stats</button>
     </div>
   </div>
 </main>
 
 <template id="productTemplate">
   <div class="product-card">
-    <div class="click-counter">👁️ <span class="counter-value">0</span></div>
     <div class="product-images"></div>
     <div class="product-content">
       <h3 class="product-title"></h3>
@@ -913,222 +773,119 @@ const popupWeidianLink = document.getElementById("popupWeidianLink");
 const closeProductPopup = document.getElementById("closeProductPopup");
 
 const exitDashboard = document.getElementById("exitDashboard");
-const resetStats = document.getElementById("resetStats");
 const downloadProduitFile = document.getElementById("downloadProduitFile");
 
 let products = [];
 let currentProduct = null;
 let isDashboardMode = false;
 
-// ============================================
-// SYSTEM NATIF LOCALSTORAGE REFAIT (Remplace window.storage défaillant)
-// ============================================
-const appStorage = {
-  get: (key) => localStorage.getItem(key),
-  set: (key, value) => localStorage.setItem(key, value),
-  delete: (key) => localStorage.removeItem(key),
-  listKeys: (prefix) => Object.keys(localStorage).filter(k => k.startsWith(prefix))
-};
+// Namespace unique pour l'API CountAPI lié à CSL FINDS
+const API_NAMESPACE = "cslfinds_v4_prod";
 
-function getVisitorId() {
-  let visitorId = appStorage.get('csl_visitor_id');
-  if (!visitorId) {
-    visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    appStorage.set('csl_visitor_id', visitorId);
-  }
-  return visitorId;
+// ============================================
+// SYSTEM REFAIT : BASE DE DONNÉES EN LIGNE + CLICS UNIQUES
+// ============================================
+
+// Vérifie de façon unique si l'utilisateur a déjà cliqué sur ce produit
+function hasUserClickedProduct(productName) {
+  return localStorage.getItem(`has_clicked_${btoa(productName)}`) === "true";
 }
 
-function trackVisit() {
+function markProductAsClicked(productName) {
+  localStorage.setItem(`has_clicked_${btoa(productName)}`, "true");
+}
+
+// Incrémente la vue globale de manière UNIQUE sur le serveur
+async function trackGlobalProductClick(productName) {
+  if (hasUserClickedProduct(productName)) return; // Bloque si déjà cliqué
+  
+  const key = productName.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 60);
   try {
-    const visitorId = getVisitorId();
-    const now = new Date();
-    const visitKey = `visit_${visitorId}_${now.getTime()}`;
+    // 1. Incrémente le compteur spécifique du produit
+    await fetch(`https://api.countapi.xyz/hit/${API_NAMESPACE}/${key}`).catch(() => {});
+    // 2. Incrémente le compteur total du site
+    await fetch(`https://api.countapi.xyz/hit/${API_NAMESPACE}/total_site_visits`).catch(() => {});
     
-    appStorage.set(visitKey, JSON.stringify({
-      visitorId: visitorId,
-      timestamp: now.getTime(),
-      date: now.toISOString()
-    }));
-    
-    console.log('✅ Visite enregistrée');
-  } catch (error) {
-    console.error('Erreur tracking visite:', error);
+    markProductAsClicked(productName);
+  } catch(e) {
+    console.error("Erreur API de comptage", e);
   }
 }
 
-function getVisitStats() {
+// Récupère la valeur en direct d'un produit depuis le serveur
+async function fetchProductClicksFromServer(productName) {
+  const key = productName.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 60);
   try {
-    const keys = appStorage.listKeys('visit_');
-    if (!keys || keys.length === 0) return { today: 0, week: 0, month: 0 };
-    
-    const now = new Date();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    
-    const dayOfWeek = now.getDay();
-    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-    const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysToMonday).getTime();
-    
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-    
-    const visitors = {
-      today: new Set(),
-      week: new Set(),
-      month: new Set()
-    };
-    
-    for (const key of keys) {
-      try {
-        const value = appStorage.get(key);
-        if (value) {
-          const visit = JSON.parse(value);
-          const timestamp = visit.timestamp;
-          const visitorId = visit.visitorId;
-          
-          if (timestamp >= todayStart) {
-            visitors.today.add(visitorId);
-          }
-          if (timestamp >= weekStart) {
-            visitors.week.add(visitorId);
-          }
-          if (timestamp >= monthStart) {
-            visitors.month.add(visitorId);
-          }
-        }
-      } catch (e) {
-        console.error('Erreur lecture visite:', e);
-      }
+    const res = await fetch(`https://api.countapi.xyz/get/${API_NAMESPACE}/${key}`);
+    if(res.ok) {
+      const data = await res.json();
+      return data.value || 0;
     }
-    
-    return {
-      today: visitors.today.size,
-      week: visitors.week.size,
-      month: visitors.month.size
-    };
-  } catch (error) {
-    console.error('Erreur stats visites:', error);
-    return { today: 0, week: 0, month: 0 };
-  }
+  } catch(e) {}
+  return 0;
 }
 
-// ============================================
-// SYSTÈME DE COMPTEUR DE CLICS REFAIT
-// ============================================
-
-function getProductKey(product) {
-  return `click_${product.name.replace(/\s+/g, '_')}`;
-}
-
-function getProductClicks(product) {
-  const key = getProductKey(product);
-  const val = appStorage.get(key);
-  return val ? parseInt(val) : 0;
-}
-
-function incrementProductClick(product) {
+// Récupère la valeur totale des clics sur le site
+async function fetchTotalSiteClicks() {
   try {
-    const key = getProductKey(product);
-    const current = getProductClicks(product);
-    appStorage.set(key, (current + 1).toString());
-  } catch (error) {
-    console.error('Erreur incrémentation:', error);
-  }
-}
-
-function getAllProductClicks() {
-  const keys = appStorage.listKeys('click_');
-  const clicks = {};
-  for (const key of keys) {
-    const val = appStorage.get(key);
-    if (val) {
-      clicks[key] = parseInt(val);
+    const res = await fetch(`https://api.countapi.xyz/get/${API_NAMESPACE}/total_site_visits`);
+    if(res.ok) {
+      const data = await res.json();
+      return data.value || 0;
     }
-  }
-  return clicks;
-}
-
-function getProductPrice(product) {
-  return product.price || null;
+  } catch(e) {}
+  return 0;
 }
 
 // ============================================
-// GÉNÉRATION DU FICHIER PRODUIT.TXT
+// GESTION DU DASHBOARD SECRET (DASHBOARDRECAP)
 // ============================================
 
-function generateProduitTxt() {
-  let content = '';
-  products.forEach(product => {
-    const images = product.images.join(',');
-    const price = product.price || '';
-    const seller = product.seller || '';
-    content += `##${product.category}#${product.name}#${price}#${images}#${product.bbd}#${product.weidian}#${seller}\n`;
-  });
-  return content;
-}
-
-function downloadProduitTxt() {
-  const content = generateProduitTxt();
-  const blob = new Blob([content], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'Produit.txt';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-downloadProduitFile.addEventListener('click', () => {
-  downloadProduitTxt();
-  alert('✅ Fichier Produit.txt téléchargé !\n\nRemplacez votre ancien fichier par celui-ci pour sauvegarder la configuration.');
-});
-
-// ============================================
-// AFFICHAGE DU DASHBOARD
-// ============================================
-
-function showDashboard() {
+async function showDashboard() {
   isDashboardMode = true;
   categoryContainer.style.display = 'none';
   dashboardContainer.classList.add('active');
   
-  const stats = getVisitStats();
-  document.getElementById('statToday').textContent = stats.today;
-  document.getElementById('statWeek').textContent = stats.week;
-  document.getElementById('statMonth').textContent = stats.month;
+  document.getElementById('statGlobalSite').textContent = "Chargement...";
   
-  const clicks = getAllProductClicks();
-  
-  const productStats = products.map(product => ({
-    product: product,
-    clicks: clicks[getProductKey(product)] || 0,
-    price: product.price || null
-  })).sort((a, b) => b.clicks - a.clicks);
+  // Charge le total général
+  const totalClicks = await fetchTotalSiteClicks();
+  document.getElementById('statGlobalSite').textContent = `${totalClicks} clics`;
   
   const productStatsList = document.getElementById('productStatsList');
-  productStatsList.innerHTML = '';
+  productStatsList.innerHTML = '<p style="text-align:center; color:var(--muted); padding:20px;">Récupération des vues réelles sur la base de données...</p>';
   
-  if (productStats.length === 0) {
-    productStatsList.innerHTML = '<p style="text-align:center; color:var(--muted);">Aucune donnée disponible</p>';
-  } else {
-    productStats.forEach(stat => {
-      const item = document.createElement('div');
-      item.className = 'product-stat-item';
-      
-      let priceHTML = '';
-      if (stat.price !== null && stat.price !== '') {
-        priceHTML = `<span class="product-stat-price">${parseFloat(stat.price).toFixed(2)}€</span>`;
-      }
-      
-      item.innerHTML = `
-        <span class="product-stat-name">${stat.product.name}</span>
-        ${priceHTML}
-        <span class="product-stat-clicks">${stat.clicks} 👁️</span>
-      `;
-      productStatsList.appendChild(item);
-    });
-  }
+  // Récupère en parallèle les compteurs réels de chaque produit
+  const promises = products.map(async (product) => {
+    const clicks = await fetchProductClicksFromServer(product.name);
+    return {
+      product: product,
+      clicks: clicks,
+      price: product.price || null
+    };
+  });
+  
+  const productStats = await Promise.all(promises);
+  // Trie par produit le plus cliqué
+  productStats.sort((a, b) => b.clicks - a.clicks);
+  
+  productStatsList.innerHTML = '';
+  productStats.forEach(stat => {
+    const item = document.createElement('div');
+    item.className = 'product-stat-item';
+    
+    let priceHTML = '';
+    if (stat.price !== null && stat.price !== '') {
+      priceHTML = `<span class="product-stat-price">${parseFloat(stat.price).toFixed(2)}€</span>`;
+    }
+    
+    item.innerHTML = `
+      <span class="product-stat-name">${stat.product.name}</span>
+      ${priceHTML}
+      <span class="product-stat-clicks">${stat.clicks} 👁️</span>
+    `;
+    productStatsList.appendChild(item);
+  });
 }
 
 function hideDashboard() {
@@ -1144,17 +901,24 @@ exitDashboard.addEventListener('click', () => {
   filterAndSort();
 });
 
-resetStats.addEventListener('click', () => {
-  if (confirm('⚠️ Voulez-vous vraiment réinitialiser toutes les statistiques ?')) {
-    const clickKeys = appStorage.listKeys('click_');
-    clickKeys.forEach(k => appStorage.delete(k));
-    
-    const visitKeys = appStorage.listKeys('visit_');
-    visitKeys.forEach(k => appStorage.delete(k));
-    
-    alert('✅ Statistiques réinitialisées !');
-    showDashboard();
-  }
+// Téléchargement du fichier de configuration
+downloadProduitFile.addEventListener('click', () => {
+  let content = '';
+  products.forEach(product => {
+    const images = product.images.join(',');
+    const price = product.price || '';
+    const seller = product.seller || '';
+    content += `##${product.category}#${product.name}#${price}#${images}#${product.bbd}#${product.weidian}#${seller}\n`;
+  });
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Produit.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 });
 
 // TikTok Detection
@@ -1162,8 +926,7 @@ resetStats.addEventListener('click', () => {
   const alreadySeen = localStorage.getItem("tiktokPopupSeen");
   if (alreadySeen) return;
   const ua = navigator.userAgent || navigator.vendor || window.opera;
-  const isTikTok = ua.includes("TikTok") || ua.includes("musical_ly");
-  if (isTikTok) {
+  if (ua.includes("TikTok") || ua.includes("musical_ly")) {
     const popup = document.getElementById("tiktokPopup");
     popup.classList.remove("hidden");
     document.getElementById("closePopup").addEventListener("click", () => {
@@ -1173,14 +936,11 @@ resetStats.addEventListener('click', () => {
   }
 })();
 
-// Gestion du Thème
+// Thème
 (function loadTheme() {
-  const saved = localStorage.getItem("theme");
-  if (saved === "light") {
+  if (localStorage.getItem("theme") === "light") {
     document.body.classList.add("light");
     themeToggle.textContent = "☀️";
-  } else {
-    themeToggle.textContent = "🌙";
   }
 })();
 
@@ -1191,7 +951,7 @@ themeToggle.addEventListener("click", () => {
   localStorage.setItem("theme", isLight ? "light" : "dark");
 });
 
-// Popup Produit
+// Ouverture Popup Article
 function openLinksPopup(product) {
   currentProduct = product;
   popupProductTitle.textContent = product.name;
@@ -1207,31 +967,16 @@ function openLinksPopup(product) {
   popupBbdLink.href = product.bbd;
   popupWeidianLink.href = product.weidian;
   
-  // Incrémenter le compteur de clics natif
-  incrementProductClick(product);
+  // Déclenche l'enregistrement de la vue unique en tâche de fond sur la base de données globale
+  trackGlobalProductClick(product.name);
   
   productPopup.classList.remove("hidden");
-  
-  // Rafraîchir doucement la grille des produits en arrière-plan pour afficher la nouvelle vue
-  const matchesSearch = searchInput.value.trim().toLowerCase();
-  if (matchesSearch !== "dashboardrecap") {
-     filterAndSort();
-  }
 }
 
-closeProductPopup.addEventListener("click", () => {
-  productPopup.classList.add("hidden");
-  currentProduct = null;
-});
+closeProductPopup.addEventListener("click", () => { productPopup.classList.add("hidden"); });
+productPopup.addEventListener("click", (e) => { if (e.target === productPopup) productPopup.classList.add("hidden"); });
 
-productPopup.addEventListener("click", (e) => {
-  if (e.target === productPopup) {
-    productPopup.classList.add("hidden");
-    currentProduct = null;
-  }
-});
-
-// Chargement des données
+// Parser & Rendu
 async function loadData() {
   try {
     const categoriesText = await fetch("categorie.txt?t=" + Date.now()).then(res => res.text());
@@ -1240,76 +985,41 @@ async function loadData() {
     let sellers = [];
     try {
       const sellersText = await fetch("vendeur.txt?t=" + Date.now()).then(res => res.text());
-      const cleanSellersText = sellersText.replace(/[\r\n]/g, "").trim();
-      sellers = cleanSellersText.split("#").map(s => s.trim()).filter(Boolean);
-      
+      sellers = sellersText.replace(/[\r\n]/g, "").trim().split("#").map(s => s.trim()).filter(Boolean);
       sellers.forEach(seller => {
         const option = document.createElement("option");
-        option.value = seller;
-        option.textContent = seller;
-        sellerSelect.appendChild(option);
+        option.value = seller; option.textContent = seller; sellerSelect.appendChild(option);
       });
-    } catch(e) {
-      console.warn("Fichier vendeur.txt absent ou illisible.");
-    }
+    } catch(e) {}
 
-    const cleanCategoriesText = categoriesText.replace(/[\r\n]/g, "").trim();
-    const cleanProductsText = productsText.replace(/[\r\n]/g, "").trim();
+    const validCategories = categoriesText.replace(/[\r\n]/g, "").trim().split("#").map(cat => cat.trim()).filter(Boolean);
+    
+    const blocks = productsText.replace(/[\r\n]/g, "").trim().split("##").map(b => b.trim()).filter(Boolean);
+    products = [];
 
-    const categories = cleanCategoriesText.split("#").map(cat => cat.trim()).filter(Boolean);
+    blocks.forEach(block => {
+      const infos = block.split("#").map(i => i.trim());
+      if (infos.length < 5) return;
+      
+      let category = infos[0], name = infos[1], price = "", images = [], bbd = "", weidian = "", seller = "";
+      
+      if (infos.length >= 7) {
+        price = infos[2];
+        images = infos[3].split(",").map(img => img.trim()).filter(Boolean);
+        bbd = infos[4]; weidian = infos[5]; seller = infos[6] || "";
+      } else {
+        images = infos[2].split(",").map(img => img.trim()).filter(Boolean);
+        bbd = infos[3]; weidian = infos[4]; seller = infos[5] || "";
+      }
+      
+      if (!validCategories.includes(category)) return;
+      products.push({ category, name, price: price || null, images, bbd, weidian, seller });
+    });
 
-    parseProducts(cleanProductsText, categories, sellers);
     renderProducts(products);
   } catch (err) {
-    console.error("Erreur de chargement général", err);
+    console.error("Erreur chargement", err);
   }
-}
-
-function parseProducts(text, validCategories, validSellers) {
-  const blocks = text.split("##").map(b => b.trim()).filter(Boolean);
-  products = [];
-
-  blocks.forEach(block => {
-    const infos = block.split("#").map(i => i.trim());
-    
-    let category, name, price, images, bbd, weidian, seller;
-    
-    if (infos.length >= 7) {
-      category = infos[0];
-      name = infos[1];
-      price = infos[2];
-      images = infos[3].split(",").map(img => img.trim()).filter(Boolean);
-      bbd = infos[4];
-      weidian = infos[5];
-      seller = infos[6] || "";
-    } else if (infos.length >= 5) {
-      category = infos[0];
-      name = infos[1];
-      price = "";
-      images = infos[2].split(",").map(img => img.trim()).filter(Boolean);
-      bbd = infos[3];
-      weidian = infos[4];
-      seller = infos[5] || "";
-    } else {
-      return;
-    }
-    
-    if (validSellers.length > 0 && seller && !validSellers.includes(seller)) {
-      seller = "";
-    }
-
-    if (!validCategories.includes(category)) return;
-
-    products.push({ 
-      category, 
-      name, 
-      price: price || null, 
-      images, 
-      bbd, 
-      weidian, 
-      seller 
-    });
-  });
 }
 
 function renderProducts(data) {
@@ -1320,21 +1030,12 @@ function renderProducts(data) {
   }
 
   const grouped = {};
-  data.forEach(product => {
-    if (!grouped[product.category]) grouped[product.category] = [];
-    grouped[product.category].push(product);
-  });
+  data.forEach(p => { if (!grouped[p.category]) grouped[p.category] = []; grouped[p.category].push(p); });
 
   for (const category of Object.keys(grouped)) {
-    const section = document.createElement("section");
-    section.className = "category-section";
-
-    const title = document.createElement("h2");
-    title.className = "category-title";
-    title.textContent = category;
-
-    const grid = document.createElement("div");
-    grid.className = "products-grid";
+    const section = document.createElement("section"); section.className = "category-section";
+    const title = document.createElement("h2"); title.className = "category-title"; title.textContent = category;
+    const grid = document.createElement("div"); grid.className = "products-grid";
 
     for (const product of grouped[category]) {
       const clone = template.content.cloneNode(true);
@@ -1343,50 +1044,32 @@ function renderProducts(data) {
       clone.querySelector(".product-title").textContent = product.name;
       clone.querySelector(".product-category").textContent = product.category;
 
-      const sellerTag = clone.querySelector(".product-seller");
       if (product.seller) {
-        sellerTag.textContent = product.seller;
-        sellerTag.classList.remove("hidden");
+        const sTag = clone.querySelector(".product-seller");
+        sTag.textContent = product.seller; sTag.classList.remove("hidden");
       }
 
-      // Charger le compteur de clics local
-      const clickCounter = clone.querySelector(".counter-value");
-      const clicks = getProductClicks(product);
-      clickCounter.textContent = clicks;
-
-      // Afficher le prix si disponible (Chargé depuis Produit.txt)
-      const price = getProductPrice(product);
-      if (price !== null && price !== '') {
-        const priceBadge = document.createElement("div");
-        priceBadge.className = "price-badge";
-        priceBadge.textContent = `${parseFloat(price).toFixed(2)}€`;
-        cardElement.appendChild(priceBadge);
+      if (product.price !== null && product.price !== '') {
+        const pBadge = document.createElement("div");
+        pBadge.className = "price-badge"; pBadge.textContent = `${parseFloat(product.price).toFixed(2)}€`;
+        cardElement.appendChild(pBadge);
       }
 
-      const imagesContainer = clone.querySelector(".product-images");
+      const imgCont = clone.querySelector(".product-images");
       product.images.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        img.loading = "lazy";
-        imagesContainer.appendChild(img);
+        const img = document.createElement("img"); img.src = url; img.loading = "lazy"; imgCont.appendChild(img);
       });
 
       cardElement.addEventListener("click", () => openLinksPopup(product));
       grid.appendChild(clone);
     }
-
-    section.appendChild(title);
-    section.appendChild(grid);
-    categoryContainer.appendChild(section);
+    section.appendChild(title); section.appendChild(grid); categoryContainer.appendChild(section);
   }
 }
 
 function filterAndSort(e) {
-  if (e && e.target === mobileSearchInput) {
-    searchInput.value = mobileSearchInput.value;
-  } else if (e && e.target === searchInput) {
-    mobileSearchInput.value = searchInput.value;
-  }
+  if (e && e.target === mobileSearchInput) searchInput.value = mobileSearchInput.value;
+  else if (e && e.target === searchInput) mobileSearchInput.value = searchInput.value;
 
   const searchValue = searchInput.value.trim();
   
@@ -1394,23 +1077,17 @@ function filterAndSort(e) {
     showDashboard();
     return;
   }
-  
-  if (isDashboardMode) {
-    hideDashboard();
-  }
+  if (isDashboardMode) hideDashboard();
   
   const searchLower = searchValue.toLowerCase();
   const sellerValue = sellerSelect.value;
   const categoryValue = categorySelect.value; 
   
-  let filtered = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchLower);
-    const matchesSeller = (sellerValue === "all") || (product.seller === sellerValue);
-    const matchesCategory = (categoryValue === "all") || (product.category.toUpperCase() === categoryValue.toUpperCase());
-    
-    return matchesSearch && matchesSeller && matchesCategory;
+  let filtered = products.filter(p => {
+    return p.name.toLowerCase().includes(searchLower) && 
+           (sellerValue === "all" || p.seller === sellerValue) &&
+           (categoryValue === "all" || p.category.toUpperCase() === categoryValue.toUpperCase());
   });
-
   renderProducts(filtered);
 }
 
@@ -1419,40 +1096,26 @@ mobileSearchInput.addEventListener("input", filterAndSort);
 sellerSelect.addEventListener("change", filterAndSort);
 categorySelect.addEventListener("change", filterAndSort); 
 
-// Initialisation
-(function init() {
-  trackVisit();
-  loadData();
-})();
+// Lancement
+loadData();
 
-// Popup Automatique BBDBUY
-(function initBbdPopup() {
-  if (!localStorage.getItem('hideBBD')) {
-    setTimeout(() => {
-      const popup = document.getElementById('popupBBD');
-      if (popup) popup.style.display = 'flex';
-    }, 1000);
-  }
-})();
-
+// Popup BBD
+if (!localStorage.getItem('hideBBD')) {
+  setTimeout(() => { if(document.getElementById('popupBBD')) document.getElementById('popupBBD').style.display = 'flex'; }, 1000);
+}
 function closePopup() {
-  if (document.getElementById('noMore').checked) {
-    localStorage.setItem('hideBBD', 'true');
-  }
-  const popup = document.getElementById('popupBBD');
-  if (popup) popup.style.display = 'none';
+  if (document.getElementById('noMore').checked) localStorage.setItem('hideBBD', 'true');
+  if(document.getElementById('popupBBD')) document.getElementById('popupBBD').style.display = 'none';
 }
 </script>
 
-<div id="popupBBD" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
-  <div style="background: #121212; color: white; width: 85%; max-width: 320px; padding: 15px; border-radius: 14px; text-align: center; border: 1px solid #2eaadc; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.9);">
-    <button onclick="closePopup()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; color: #9ca3af; font-size: 22px; cursor: pointer; transition: 0.2s; z-index: 10000;">✕</button>
-    <h2 style="font-weight: 800; font-size: 16px; color: #2eaadc; margin-top: 5px; margin-bottom: 8px;">REJOINS BBDBUY !</h2>
-    <p style="font-size: 11px; color: #9ca3af; line-height: 1.4; margin-bottom: 15px;">Inscris-toi dès maintenant sur BbdBuy pour obtenir ton pack de coupons exclusifs.</p>
-    <a href="https://www.bbdbuyeu.com/register?inviteCode=hQUDCD" target="_blank" style="display: block; padding: 12px; border-radius: 8px; font-weight: 800; font-size: 13px; text-decoration: none; background: #2eaadc; color: #000; text-transform: uppercase; letter-spacing: 0.5px;">S'INSCRIRE ICI</a>
-    <label style="display:block; margin-top:15px; font-size:11px; color:#9ca3af; cursor:pointer;">
-      <input type="checkbox" id="noMore" style="margin-right: 6px;"> Ne plus afficher
-    </label>
+<div id="popupBBD" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(8px);">
+  <div style="background: #121212; color: white; width: 85%; max-width: 320px; padding: 15px; border-radius: 14px; text-align: center; border: 1px solid #2eaadc; position: relative;">
+    <button onclick="closePopup()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; color: #9ca3af; font-size: 22px; cursor: pointer;">✕</button>
+    <h2 style="font-weight: 800; font-size: 16px; color: #2eaadc; margin-bottom: 8px;">REJOINS BBDBUY !</h2>
+    <p style="font-size: 11px; color: #9ca3af; line-height: 1.4; margin-bottom: 15px;">Inscris-toi dès maintenant sur BbdBuy pour obtenir ton pack de coupons.</p>
+    <a href="https://www.bbdbuyeu.com/register?inviteCode=hQUDCD" target="_blank" style="display: block; padding: 12px; border-radius: 8px; font-weight: 800; background: #2eaadc; color: #000; text-decoration: none;">S'INSCRIRE ICI</a>
+    <label style="display:block; margin-top:15px; font-size:11px; color:#9ca3af; cursor:pointer;"><input type="checkbox" id="noMore" style="margin-right: 6px;"> Ne plus afficher</label>
   </div>
 </div>
 
